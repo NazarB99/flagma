@@ -6,9 +6,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
-import {Text, Easing, StyleSheet} from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import {Screen, Title, Subtitle, TextInput, View, NavigationBar} from '@shoutem/ui'
+import {StyleSheet} from 'react-native'
+import {Title, Subtitle, TextInput, View, NavigationBar, Text, Button} from '@shoutem/ui'
 import Hamburger from 'react-native-animated-hamburger'
 
 const styles = StyleSheet.create({
@@ -21,6 +20,10 @@ const styles = StyleSheet.create({
   main: {}, // style of main board
   container: {
     backgroundColor: 'black',
+  },
+  input: {
+    width: 250,
+    marginBottom: 10,
   },
 })
 
@@ -58,7 +61,7 @@ class LoginScreen extends React.Component {
     const parent = this.props.navigation.dangerouslyGetParent()
     const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen
     return (
-      <View style={{flex: 1}} styleName="vertical h-center v-center">
+      <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
         <NavigationBar
           leftComponent={
             <Hamburger
@@ -73,10 +76,30 @@ class LoginScreen extends React.Component {
           }
           centerComponent={<Title>FLAGMA</Title>}
         />
-        <Title>Login</Title>
-        <Subtitle>Welcome back!</Subtitle>
-        <TextInput placeholder="Email" />
-        <TextInput placeholder="Password" secureTextEntry />
+        <Title styleName="bold" style={{color: '#fff'}}>
+          Login
+        </Title>
+        <Subtitle styleName="bold" style={{color: '#fff', marginBottom: 10}}>
+          Welcome back!
+        </Subtitle>
+        <TextInput style={styles.input} placeholder="Email" />
+        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+        <Button
+          style={{
+            backgroundColor: '#ff6633',
+            borderColor: '#ff6633',
+            width: 250,
+            height: 50,
+            marginBottom: 10,
+          }}
+          onPress={() => this.props.navigation.navigate('Login')}>
+          <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
+        </Button>
+        <Button style={{backgroundColor: 'transparent'}} onPress={() => this.props.navigation.navigate('Register')}>
+          <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
+            Or you can register here
+          </Text>
+        </Button>
       </View>
     )
   }

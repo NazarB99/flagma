@@ -25,7 +25,7 @@ const DrawerNav = createDrawerNavigator(
       activeBackgroundColor: '#6b52ae',
     },
     overlayColor: 'rgba(0,0,0,0)',
-    drawerType: 'slide',
+    drawerType: 'front',
   }
 )
 
