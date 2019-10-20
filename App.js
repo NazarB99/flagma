@@ -19,6 +19,7 @@ const DrawerNav = createDrawerNavigator(
     Main: MainScreen,
   },
   {
+    initialRouteName: 'Main',
     drawerBackgroundColor: 'rgba(255,255,255,1)',
     contentOptions: {
       activeTintColor: '#fff',

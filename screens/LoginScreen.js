@@ -7,8 +7,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
 import {StyleSheet} from 'react-native'
-import {Title, Subtitle, TextInput, View, NavigationBar, Text, Button} from '@shoutem/ui'
-import Hamburger from 'react-native-animated-hamburger'
+import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 
 const styles = StyleSheet.create({
   drawer: {
@@ -58,24 +57,8 @@ class LoginScreen extends React.Component {
   }
 
   render() {
-    const parent = this.props.navigation.dangerouslyGetParent()
-    const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen
     return (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
-        <NavigationBar
-          leftComponent={
-            <Hamburger
-              type="cross"
-              active={isDrawerOpen}
-              onPress={() => this.props.navigation.openDrawer()}
-              underlayColor="transparent"
-            />
-            // <Button onPress={() => alert('')}>
-            //   <Icon name="sidebar" />
-            // </Button>
-          }
-          centerComponent={<Title>FLAGMA</Title>}
-        />
         <Title styleName="bold" style={{color: '#fff'}}>
           Login
         </Title>
@@ -95,7 +78,9 @@ class LoginScreen extends React.Component {
           onPress={() => this.props.navigation.navigate('Login')}>
           <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
         </Button>
-        <Button style={{backgroundColor: 'transparent'}} onPress={() => this.props.navigation.navigate('Register')}>
+        <Button
+          style={{backgroundColor: 'transparent'}}
+          onPress={() => this.props.navigation.navigate('Register')}>
           <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
             Or you can register here
           </Text>

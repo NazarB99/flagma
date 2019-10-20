@@ -7,8 +7,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
 import {StyleSheet} from 'react-native'
-import {Title, Subtitle, TextInput, View, NavigationBar, Text, Button} from '@shoutem/ui'
-import Hamburger from 'react-native-animated-hamburger'
+import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 
 const styles = StyleSheet.create({
   drawer: {
@@ -58,24 +57,8 @@ class RegisterScreen extends React.Component {
   }
 
   render() {
-    const parent = this.props.navigation.dangerouslyGetParent()
-    const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen
     return (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
-        <NavigationBar
-          leftComponent={
-            <Hamburger
-              type="cross"
-              active={isDrawerOpen}
-              onPress={() => this.props.navigation.openDrawer()}
-              underlayColor="transparent"
-            />
-            // <Button onPress={() => alert('')}>
-            //   <Icon name="sidebar" />
-            // </Button>
-          }
-          centerComponent={<Title>FLAGMA</Title>}
-        />
         <Title styleName="bold" style={{color: '#fff'}}>
           Registration
         </Title>
