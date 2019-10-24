@@ -6,7 +6,10 @@
 import React, {Component} from 'react'
 import {View, Text} from 'react-native'
 import {createAppContainer, createDrawerNavigator} from 'react-navigation'
+import {Provider} from 'react-redux'
+import {PersistGate} from 'redux-persist/integration/react'
 
+import {store, persistor} from './store'
 import NavigationService from './components/NavigationService'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
@@ -19,7 +22,7 @@ const DrawerNav = createDrawerNavigator(
     Main: MainScreen,
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'Login',
     drawerBackgroundColor: 'rgba(255,255,255,1)',
     contentOptions: {
       activeTintColor: '#fff',
@@ -35,13 +38,17 @@ const AppContainer = createAppContainer(DrawerNav)
 class App extends Component {
   render() {
     return (
-      <View style={{flex: 1}}>
-        <AppContainer
-          ref={navigatorRef => {
-            NavigationService.setTopLevelNavigator(navigatorRef)
-          }}
-        />
-      </View>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <View style={{flex: 1}}>
+            <AppContainer
+              ref={navigatorRef => {
+                NavigationService.setTopLevelNavigator(navigatorRef)
+              }}
+            />
+          </View>
+        </PersistGate>
+      </Provider>
     )
   }
 }

@@ -8,6 +8,9 @@
 import React from 'react'
 import {StyleSheet} from 'react-native'
 import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
+import {connect} from 'react-redux'
+
+import {login} from '../actions/userActions'
 
 const styles = StyleSheet.create({
   drawer: {
@@ -29,6 +32,8 @@ const styles = StyleSheet.create({
 class LoginScreen extends React.Component {
   state = {
     active: false,
+    email: '',
+    password: '',
   }
 
   componentDidMount() {
@@ -56,6 +61,14 @@ class LoginScreen extends React.Component {
     })
   }
 
+  onChangeText = (key, value) => {
+    this.setState({[key]: value})
+  }
+
+  logIn = () => {
+    this.props.login(this.state.email, this.state.password)
+  }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
@@ -65,8 +78,20 @@ class LoginScreen extends React.Component {
         <Subtitle styleName="bold" style={{color: '#fff', marginBottom: 10}}>
           Welcome back!
         </Subtitle>
-        <TextInput style={styles.input} placeholder="Email" />
-        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+        <TextInput
+          autoCompleteType="email"
+          value={this.state.email}
+          onChangeText={text => this.onChangeText('email', text)}
+          style={styles.input}
+          placeholder="E-mail"
+        />
+        <TextInput
+          value={this.state.password}
+          style={styles.input}
+          onChangeText={text => this.onChangeText('password', text)}
+          placeholder="Password"
+          secureTextEntry
+        />
         <Button
           style={{
             backgroundColor: '#ff6633',
@@ -75,7 +100,7 @@ class LoginScreen extends React.Component {
             height: 50,
             marginBottom: 10,
           }}
-          onPress={() => this.props.navigation.navigate('Login')}>
+          onPress={() => this.logIn()}>
           <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
         </Button>
         <Button
@@ -90,4 +115,13 @@ class LoginScreen extends React.Component {
   }
 }
 
-export default LoginScreen
+const mapStateToProps = state => ({
+  user: state.user,
+})
+
+export default connect(
+  mapStateToProps,
+  {
+    login,
+  }
+)(LoginScreen)
