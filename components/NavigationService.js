@@ -1,5 +1,6 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
-import {NavigationActions} from 'react-navigation'
+import {NavigationActions, DrawerActions} from 'react-navigation'
 
 let _navigator
 
@@ -16,9 +17,24 @@ function navigate(routeName, params) {
   )
 }
 
+function openDrawer() {
+  _navigator.dispatch(DrawerActions.openDrawer())
+}
+
+function closeDrawer() {
+  _navigator.dispatch(DrawerActions.closeDrawer())
+}
+
+function goBack() {
+  _navigator.dispatch(NavigationActions.back())
+}
+
 // add other navigation functions that you need and export them
 
 export default {
   navigate,
   setTopLevelNavigator,
+  openDrawer,
+  closeDrawer,
+  goBack,
 }

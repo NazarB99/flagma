@@ -24,65 +24,100 @@ import {
   Caption,
   Title,
 } from '@shoutem/ui'
+import {connect} from 'react-redux'
+import Hamburger from 'react-native-animated-hamburger'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
+import {getAdsByCatId, setAd} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
+import Loading from '../components/Loading'
+import {MAIN_COLOR} from '../config/Constants'
 
 class MainScreen extends React.Component {
-  state = {
-    restaurants: [
-      {
-        name: 'Gaspar Brasserie',
-        address: '185 Sutter St, San Francisco, CA 94109',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-1.jpg'},
-      },
-      {
-        name: 'Chalk Point Kitchen',
-        address: '527 Broome St, New York, NY 10013',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-2.jpg'},
-      },
-      {
-        name: 'Kyoto Amber Upper East',
-        address: '225 Mulberry St, New York, NY 10012',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-3.jpg'},
-      },
-      {
-        name: 'Kyoto Amber Upper East',
-        address: '225 Mulberry St, New York, NY 10012',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-3.jpg'},
-      },
-      {
-        name: 'Kyoto Amber Upper East',
-        address: '225 Mulberry St, New York, NY 10012',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-3.jpg'},
-      },
-      {
-        name: 'Chalk Point Kitchen',
-        address: '527 Broome St, New York, NY 10013',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-2.jpg'},
-      },
-      {
-        name: 'Chalk Point Kitchen',
-        address: '527 Broome St, New York, NY 10013',
-        image: {url: 'https://shoutem.github.io/static/getting-started/restaurant-2.jpg'},
-      },
-    ],
+  static navigationOptions = ({navigation}) => {
+    return {
+      headerStyle: {backgroundColor: MAIN_COLOR},
+      headerLeft: (
+        <Hamburger
+          type="cross"
+          active={false}
+          color="white"
+          onPress={() => {
+            if (true) {
+              navigation.openDrawer()
+              // setDrawerStatus(true)
+            } else {
+              navigation.closeDrawer()
+              // setDrawerStatus(false)
+            }
+          }}
+          underlayColor="transparent"
+        />
+      ),
+      headerTitle: (
+        <TextInput
+          placeholder="Search Flagma"
+          style={{
+            backgroundColor: '#f5f5f5',
+            width: Dimensions.get('window').width * 0.65,
+            height: 40,
+            padding: 5,
+            borderRadius: 5,
+          }}
+        />
+      ),
+      headerRight: (
+        <Button style={{height: 30, width: 30, marginRight: 10, padding: 0}}>
+          <Image
+            style={{height: 30, width: 30}}
+            source={require('../assets/images/united-kingdom.png')}
+          />
+        </Button>
+      ),
+      // ) : (
+      //   <Button onPress={() => navigation.goBack()}>
+      //     <Icon size={26} color="white" name="arrow-left" />
+      //   </Button>
+      // ),
+    }
   }
 
-  renderRow(rowData, sectionId, index) {
-    const cellViews = rowData.map((restaurant, id) => (
-      <TouchableOpacity key={id} styleName="flexible">
+  state = {
+    loading: false,
+  }
+
+  componentDidMount() {
+    this.setState({loading: true})
+    const data = {
+      id: 1,
+      page: 1,
+      per_page: 14,
+    }
+    this.props.getAdsByCatId(data).then(() => this.setState({loading: false}))
+  }
+
+  renderRow = (rowData, sectionId, index) => {
+    const cellViews = rowData.map((ad, id) => (
+      <TouchableOpacity
+        key={id}
+        styleName="flexible"
+        onPress={() => {
+          this.props.setAd(ad)
+          this.props.navigation.navigate('Ad')
+        }}>
         <Card styleName="flexible">
           <Image
             resizeMode="cover"
             styleName="medium-wide"
             style={{height: 200}}
-            source={{uri: restaurant.image.url}}
+            source={{uri: ad.images[0].img_url}}
           />
           <View styleName="content">
-            <Subtitle numberOfLines={3}>{restaurant.name}</Subtitle>
+            <Subtitle numberOfLines={3}>{ad.name}</Subtitle>
+            <Title>{ad.retail_price}/item</Title>
             <View styleName="horizontal">
               <Caption styleName="collapsible" numberOfLines={2}>
-                {restaurant.address}
+                {ad.company_name}
               </Caption>
             </View>
           </View>
@@ -94,15 +129,26 @@ class MainScreen extends React.Component {
   }
 
   render() {
-    const {restaurants} = this.state
-    const groupedData = GridRow.groupByRows(restaurants, 2, () => 1)
+    console.log(this.props)
+    const {ads} = this.props.ads
+    const groupedData = GridRow.groupByRows(ads, 2, () => 1)
     return (
       <View styleName="fill-parent">
-        <Navbar navigation={this.props.navigation} />
-        <ListView data={groupedData} renderRow={this.renderRow} />
+        {this.state.loading ? (
+          <Loading />
+        ) : (
+          <ListView data={groupedData} renderRow={this.renderRow} />
+        )}
       </View>
     )
   }
 }
 
-export default MainScreen
+const mapStateToProps = state => ({
+  ads: state.ads,
+})
+
+export default connect(
+  mapStateToProps,
+  {getAdsByCatId, setAd}
+)(MainScreen)

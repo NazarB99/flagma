@@ -30,6 +30,13 @@ const styles = StyleSheet.create({
 })
 
 class RegisterScreen extends React.Component {
+  static navigationOptions = ({navigation}) => {
+    return {
+      drawerIcon: () => null,
+      drawerLabel: () => null,
+    }
+  }
+
   state = {
     active: false,
   }
@@ -65,7 +72,7 @@ class RegisterScreen extends React.Component {
 
   register = () => {
     const data = {
-      email: this.state.email, 
+      email: this.state.email,
       password: this.state.password,
     }
     this.props.registration(data)

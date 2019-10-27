@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 /* eslint-disable consistent-return */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable no-return-assign */
@@ -10,6 +11,7 @@ import {StyleSheet} from 'react-native'
 import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 import {connect} from 'react-redux'
 
+import Loading from '../components/Loading'
 import {login} from '../actions/userActions'
 
 const styles = StyleSheet.create({
@@ -30,17 +32,30 @@ const styles = StyleSheet.create({
 })
 
 class LoginScreen extends React.Component {
+  static navigationOptions = ({navigation}) => {
+    return {
+      drawerIcon: () => null,
+      drawerLabel: () => null,
+      header: null,
+    }
+  }
+
   state = {
     active: false,
     email: '',
     password: '',
+    loading: false,
   }
 
   componentDidMount() {
+    console.log(this.props)
     this.props.navigation.setParams({
       togglePanel: () => this.togglePanel(),
       active: this.state.active,
     })
+    if (this.props.user.user.id) {
+      this.props.navigation.navigate('Main')
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -48,6 +63,9 @@ class LoginScreen extends React.Component {
       this.props.navigation.setParams({
         active: this.state.active,
       })
+    }
+    if (this.props.user.user.id) {
+      this.props.navigation.navigate('Main')
     }
   }
 
@@ -66,11 +84,14 @@ class LoginScreen extends React.Component {
   }
 
   logIn = () => {
-    this.props.login(this.state.email, this.state.password)
+    this.setState({loading: true})
+    this.props.login(this.state.email, this.state.password).then(this.setState({loading: false}))
   }
 
   render() {
-    return (
+    return this.state.loading ? (
+      <Loading />
+    ) : (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
         <Title styleName="bold" style={{color: '#fff'}}>
           Login
