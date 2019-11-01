@@ -18,6 +18,7 @@ import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import MainScreen from './screens/MainScreen'
 import AdScreen from './screens/AdScreen'
+import AddAdvScreen from './screens/AddAdvScreen'
 
 const MainStack = createStackNavigator(
   {
@@ -25,6 +26,7 @@ const MainStack = createStackNavigator(
     Register: RegisterScreen,
     Main: MainScreen,
     Ad: AdScreen,
+    AddAdv: AddAdvScreen,
   },
   {
     initialRouteName: 'Login',
@@ -45,7 +47,7 @@ const DrawerNav = createDrawerNavigator(
     },
     overlayColor: 'rgba(0,0,0,0)',
     drawerType: 'front',
-    drawerLockMode: 'locked-open',
+    // drawerLockMode: 'locked-open',
   }
 )
 

@@ -21,17 +21,18 @@ import {
   Subtitle,
   ImageBackground,
   Divider,
+  Text,
+  Icon,
   Caption,
   Title,
 } from '@shoutem/ui'
 import {connect} from 'react-redux'
 import Hamburger from 'react-native-animated-hamburger'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import {getAdsByCatId, setAd} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
 import Loading from '../components/Loading'
-import {MAIN_COLOR} from '../config/Constants'
+import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
 
 class MainScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -63,6 +64,7 @@ class MainScreen extends React.Component {
             height: 40,
             padding: 5,
             borderRadius: 5,
+            marginBottom: 3,
           }}
         />
       ),
@@ -137,8 +139,24 @@ class MainScreen extends React.Component {
         {this.state.loading ? (
           <Loading />
         ) : (
-          <ListView data={groupedData} renderRow={this.renderRow} />
+          <View>
+            <ListView data={groupedData} renderRow={this.renderRow} />
+          </View>
         )}
+        <View style={{position: 'absolute', bottom: 10, alignSelf: 'center'}}>
+          <Button
+            style={{
+              backgroundColor: ORANGE_COLOR,
+              borderColor: 'white',
+              borderWidth: 0.8,
+              padding: 10,
+              borderRadius: 10,
+            }}
+            onPress={() => this.props.navigation.navigate('AddAdv')}>
+            <Icon name="plus-button" style={{color: 'white'}} />
+            <Text style={{color: 'white'}}>Add advertisement</Text>
+          </Button>
+        </View>
       </View>
     )
   }

@@ -13,6 +13,7 @@ import {connect} from 'react-redux'
 
 import Loading from '../components/Loading'
 import {login} from '../actions/userActions'
+import {getCategories, getCurrencies, getUnits} from '../actions/adsActions'
 
 const styles = StyleSheet.create({
   drawer: {
@@ -48,7 +49,9 @@ class LoginScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
+    this.props.getCategories()
+    this.props.getCurrencies()
+    this.props.getUnits()
     this.props.navigation.setParams({
       togglePanel: () => this.togglePanel(),
       active: this.state.active,
@@ -144,5 +147,8 @@ export default connect(
   mapStateToProps,
   {
     login,
+    getCategories,
+    getCurrencies,
+    getUnits,
   }
 )(LoginScreen)

@@ -18,6 +18,7 @@ class AdScreen extends Component {
   }
 
   render() {
+    console.log(this.props.ad)
     return (
       <View style={{paddingHorizontal: 5}}>
         <SliderBox
@@ -31,7 +32,7 @@ class AdScreen extends Component {
         <Title styleName="bold" style={{marginTop: 20}}>
           {this.props.ad.wholesale_price_min}$/it - {this.props.ad.wholesale_price_max}$/it
         </Title>
-        <Title styleName="bold" style={{marginTop: 10}}>
+        <Title styleName="bold" style={{marginTop: 30}}>
           Description
         </Title>
         <Text style={{marginTop: 10}}>{this.props.ad.description}</Text>
