@@ -20,8 +20,8 @@ export const postCallApi = async (url, token = '', data = {}) => {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      // 'Content-Type': 'application/json',
+      // Accept: 'application/json',
     },
     body: JSON.stringify(data),
   })

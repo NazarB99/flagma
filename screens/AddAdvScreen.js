@@ -65,9 +65,14 @@ class AddAdvScreen extends Component {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton)
       } else {
-        const source = response.uri
+        const source = {
+          uri: `file://${response.uri}`,
+          name: response.fileName,
+          type: response.type,
+          size: response.fileSize,
+        }
         const dataNew = new FormData()
-        dataNew.append('image', source)
+        dataNew.append('formData', source)
         this.props.uploadImage(this.props.token, dataNew)
 
         this.setState({
