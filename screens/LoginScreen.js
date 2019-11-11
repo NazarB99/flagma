@@ -10,6 +10,7 @@ import React from 'react'
 import {StyleSheet} from 'react-native'
 import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 import {connect} from 'react-redux'
+import {NavigationActions} from 'react-navigation'
 
 import Loading from '../components/Loading'
 import {login} from '../actions/userActions'
@@ -33,13 +34,10 @@ const styles = StyleSheet.create({
 })
 
 class LoginScreen extends React.Component {
-  static navigationOptions = ({navigation}) => {
-    return {
-      drawerIcon: () => null,
-      drawerLabel: () => null,
-      header: null,
-    }
-  }
+  static navigationOptions = ({navigation}) => ({
+    drawerIcon: () => null,
+    drawerLabel: () => (navigation.getParam('loggedIn') ? null : 'Login'),
+  })
 
   state = {
     active: false,
@@ -53,11 +51,10 @@ class LoginScreen extends React.Component {
     this.props.getCurrencies()
     this.props.getUnits()
     this.props.navigation.setParams({
-      togglePanel: () => this.togglePanel(),
-      active: this.state.active,
+      loggedIn: this.props.user.user.id,
     })
     if (this.props.user.user.id) {
-      this.props.navigation.navigate('Main')
+      this.props.navigation.navigate('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
     }
   }
 
@@ -67,8 +64,8 @@ class LoginScreen extends React.Component {
         active: this.state.active,
       })
     }
-    if (this.props.user.user.id) {
-      this.props.navigation.navigate('Main')
+    if (this.props.user.user.id && this.props.user.user.is_verified) {
+      this.props.navigation.navigate('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
     }
   }
 
@@ -88,7 +85,12 @@ class LoginScreen extends React.Component {
 
   logIn = () => {
     this.setState({loading: true})
-    this.props.login(this.state.email, this.state.password).then(this.setState({loading: false}))
+    this.props.login(this.state.email, this.state.password).then(res => {
+      this.setState({loading: false})
+      if (!this.props.user.user.is_verified) {
+        alert('Your account is not verified')
+      }
+    })
   }
 
   render() {
@@ -103,6 +105,7 @@ class LoginScreen extends React.Component {
           Welcome back!
         </Subtitle>
         <TextInput
+          autoCapitalize="none"
           autoCompleteType="email"
           value={this.state.email}
           onChangeText={text => this.onChangeText('email', text)}
@@ -134,6 +137,21 @@ class LoginScreen extends React.Component {
             Or you can register here
           </Text>
         </Button>
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Button
+            style={{backgroundColor: 'transparent'}}
+            onPress={() => this.props.navigation.navigate('Main')}>
+            <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
+              Proceed without login
+            </Text>
+          </Button>
+        </View>
       </View>
     )
   }

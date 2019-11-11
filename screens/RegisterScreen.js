@@ -10,7 +10,8 @@ import {StyleSheet} from 'react-native'
 import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 import {connect} from 'react-redux'
 
-import {registration} from '../actions/userActions'
+import Loading from '../components/Loading'
+import {registration, startVerification} from '../actions/userActions'
 
 const styles = StyleSheet.create({
   drawer: {
@@ -30,15 +31,18 @@ const styles = StyleSheet.create({
 })
 
 class RegisterScreen extends React.Component {
-  static navigationOptions = ({navigation}) => {
-    return {
-      drawerIcon: () => null,
-      drawerLabel: () => null,
-    }
-  }
+  // static navigationOptions = ({navigation}) => {
+  //   return {
+  //     drawerIcon: () => null,
+  //     drawerLabel: () => null,
+  //   }
+  // }
 
   state = {
     active: false,
+    code: false,
+    passCode: '',
+    loading: false,
   }
 
   componentDidMount() {
@@ -67,19 +71,40 @@ class RegisterScreen extends React.Component {
   }
 
   onChangeText = (key, value) => {
-    this.setState({[key]: value})
+    this.setState({[key]: value}, () => {
+      if (key === 'passCode') {
+        if (value.length === 4) {
+          this.register()
+        }
+      }
+    })
   }
 
   register = () => {
+    this.setState({loading: true})
     const data = {
       email: this.state.email,
       password: this.state.password,
+      code: this.state.passCode,
     }
-    this.props.registration(data)
+    this.props.registration(data).then(() => this.setState({loading: false}))
+  }
+
+  startVer = () => {
+    this.setState({loading: true})
+    if (this.state.email.length > 5) {
+      this.props
+        .startVerification(this.state.email)
+        .then(() => this.setState({code: true, loading: false}))
+    } else {
+      alert('E-mail is too short')
+    }
   }
 
   render() {
-    return (
+    return this.state.loading ? (
+      <Loading />
+    ) : (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
         <Title styleName="bold" style={{color: '#fff'}}>
           Registration
@@ -87,38 +112,56 @@ class RegisterScreen extends React.Component {
         <Subtitle styleName="bold" style={{color: '#fff', marginBottom: 10}}>
           Create new account.
         </Subtitle>
-        <TextInput
-          autoCompleteType="email"
-          value={this.state.email}
-          onChangeText={text => this.onChangeText('email', text)}
-          style={styles.input}
-          placeholder="E-mail"
-        />
-        <TextInput
-          value={this.state.password}
-          style={styles.input}
-          onChangeText={text => this.onChangeText('password', text)}
-          placeholder="Password"
-          secureTextEntry
-        />
-        <Button
-          style={{
-            backgroundColor: '#ff6633',
-            borderColor: '#ff6633',
-            width: 250,
-            height: 50,
-            marginBottom: 10,
-          }}
-          onPress={() => this.register()}>
-          <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
-        </Button>
-        <Button
-          style={{backgroundColor: 'transparent'}}
-          onPress={() => this.props.navigation.navigate('Login')}>
-          <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
-            Or you can login here
-          </Text>
-        </Button>
+        {!this.state.code ? (
+          <View>
+            <TextInput
+              autoCompleteType="email"
+              value={this.state.email}
+              onChangeText={text => this.onChangeText('email', text)}
+              style={styles.input}
+              placeholder="E-mail"
+            />
+            <TextInput
+              value={this.state.password}
+              style={styles.input}
+              onChangeText={text => this.onChangeText('password', text)}
+              placeholder="Password"
+              secureTextEntry
+            />
+          </View>
+        ) : (
+          <TextInput
+            value={this.state.passCode}
+            style={styles.input}
+            onChangeText={text => {
+              this.onChangeText('passCode', text)
+            }}
+            placeholder="Code"
+            secureTextEntry
+          />
+        )}
+        {!this.state.code ? (
+          <View>
+            <Button
+              style={{
+                backgroundColor: '#ff6633',
+                borderColor: '#ff6633',
+                width: 250,
+                height: 50,
+                marginBottom: 10,
+              }}
+              onPress={() => this.startVer()}>
+              <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
+            </Button>
+            <Button
+              style={{backgroundColor: 'transparent'}}
+              onPress={() => this.props.navigation.navigate('Login')}>
+              <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
+                Or you can login here
+              </Text>
+            </Button>
+          </View>
+        ) : null}
       </View>
     )
   }
@@ -132,5 +175,6 @@ export default connect(
   mapStateToProps,
   {
     registration,
+    startVerification,
   }
 )(RegisterScreen)

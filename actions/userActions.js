@@ -17,12 +17,13 @@ export const login = (email, password) => async dispatch => {
     if (response.type === 'error') {
       reject(response.code_ru)
     } else {
-      resolve()
+      resolve(response)
     }
   })
 }
 
 export const registration = data => async dispatch => {
+  console.log(data)
   dispatch({type: SET_LOADING})
   const response = await postCallApi('add_account', '', data)
   console.log(response)
@@ -32,6 +33,18 @@ export const registration = data => async dispatch => {
       reject(response.code_ru)
     } else {
       resolve()
+    }
+  })
+}
+
+export const startVerification = email => async dispatch => {
+  const response = await postCallApi('start_verification', '', {email})
+  console.log(response)
+  return new Promise((resolve, reject) => {
+    if (response.type === 'success') {
+      resolve(response)
+    } else {
+      reject('Not verified')
     }
   })
 }

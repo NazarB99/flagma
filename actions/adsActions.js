@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable camelcase */
 /* eslint-disable import/prefer-default-export */
 import {postCallApi, getCallApi} from '../config/ApiCalls'
@@ -9,6 +10,7 @@ import {
   GET_CATEGORIES,
   GET_CURRENCIES,
   GET_UNITS,
+  GET_ADS_BY_BUSINESS_ID,
 } from './type/types'
 
 export const getAdsByCatId = data => async dispatch => {
@@ -58,10 +60,20 @@ export const getUnits = () => async dispatch => {
 }
 
 export const addAdv = (token, data) => async dispatch => {
+  console.log(data)
   const response = await postCallApi('add_adv', token, data)
+  console.log(response)
   if (response.type !== 'error') {
     dispatch({type: GET_UNITS, payload: response})
   }
+
+  return new Promise((resolve, reject) => {
+    if (response.type !== 'error') {
+      resolve('ok')
+    } else {
+      reject(response)
+    }
+  })
 }
 
 export const uploadImage = (token, data) => async dispatch => {
@@ -71,9 +83,17 @@ export const uploadImage = (token, data) => async dispatch => {
   return new Promise((resolve, reject) => {
     if (response.type !== 'error') {
       return resolve(response)
-    // eslint-disable-next-line no-else-return
+      // eslint-disable-next-line no-else-return
     } else {
       return reject(response.code_en)
     }
   })
+}
+
+export const getAdsByBusiness = (token, data) => async dispatch => {
+  console.log(data)
+  const response = await getCallApi(
+    `get_ads_by_user_id?user_id=${data.id}&page=${data.page}&per_page=${data.per_page}`
+  )
+  dispatch({type: GET_ADS_BY_BUSINESS_ID, payload: response})
 }

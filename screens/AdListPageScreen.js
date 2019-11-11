@@ -27,17 +27,16 @@ import {
   Title,
 } from '@shoutem/ui'
 import {connect} from 'react-redux'
+import Hamburger from 'react-native-animated-hamburger'
 
-import {getAdsByCatId, setAd} from '../actions/adsActions'
+import {getAdsByBusiness, setAd} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
 import Loading from '../components/Loading'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
 
-class MainScreen extends React.Component {
+class AdListPageScreen extends React.Component {
   state = {
     loading: false,
-    yAxis: 0,
-    showButton: true,
   }
 
   componentWillMount() {
@@ -46,20 +45,22 @@ class MainScreen extends React.Component {
 
   componentDidMount() {
     const data = {
-      id: 1,
+      id: this.props.navigation.getParam('id'),
       page: 1,
       per_page: 14,
     }
-    this.props.getAdsByCatId(data).then(() => this.setState({loading: false}))
-    if (this.props.ads.currencies.length > 0) {
-      this.setState({loading: false})
+    const type = this.props.navigation.getParam('type')
+    if (type && type === 'business') {
+      this.props
+        .getAdsByBusiness(this.props.user.user.token, data)
+        .then(() => this.setState({loading: false}))
+      if (this.props.ads.currencies.length > 0) {
+        this.setState({loading: false})
+      }
     }
   }
 
-  getCurrency = id =>
-    this.props.ads.currencies.length > 0
-      ? this.props.ads.currencies.filter(item => item.id === id)[0].title
-      : ''
+  getCurrency = id => this.props.ads.currencies.filter(item => item.id === id)[0].title
 
   renderRow = (rowData, sectionId, index) => {
     const cellViews = rowData.map((ad, id) => {
@@ -76,21 +77,30 @@ class MainScreen extends React.Component {
             this.props.setAd(ad)
             this.props.navigation.navigate('Ad')
           }}>
-          <Card styleName="flexible">
+          <Card
+            styleName="flexible"
+            style={{
+              flexDirection: 'row',
+              width: Dimensions.get('window').width - 20,
+              marginLeft: 5,
+              marginRight: 10,
+            }}>
             <Image
               resizeMode="cover"
-              styleName="medium-wide"
-              style={{height: 200}}
+              styleName="medium-square"
+              style={{height: 150, flex: 2}}
               source={{uri: ad.images !== null ? ad.images[0].img_url : ''}}
             />
-            <View styleName="content">
-              <Subtitle numberOfLines={3}>{ad.name}</Subtitle>
-              <Title>
+            <View styleName="content" style={{flex: 3, marginLeft: 5}}>
+              <Title style={{color: '#0670ec', marginTop: 10}} numberOfLines={3}>
+                {ad.name}
+              </Title>
+              <Title style={{marginTop: 10}}>
                 {`${ad.retail_price} `}
                 {this.getCurrency(ad.currency_id) || 'TMT'}/item
               </Title>
               <View styleName="horizontal">
-                <Caption styleName="collapsible" numberOfLines={2}>
+                <Caption style={{color: '#525c69'}} styleName="collapsible" numberOfLines={2}>
                   {ad.company_name}
                 </Caption>
               </View>
@@ -100,44 +110,31 @@ class MainScreen extends React.Component {
       )
     })
 
-    return <GridRow columns={2}>{cellViews}</GridRow>
+    return <GridRow columns={1}>{cellViews}</GridRow>
   }
 
   render() {
     console.log(this.props)
     const {ads} = this.props.ads
-    const groupedData = GridRow.groupByRows(ads, 2, () => 1)
+    const groupedData = GridRow.groupByRows(ads, 1, () => 1)
     return (
       <View styleName="fill-parent">
         {this.state.loading ? (
           <Loading />
         ) : (
-          <View
-            onLayout={event => {
-              console.log(event.nativeEvent.layout)
-            }}>
+          <View>
             <ListView
               onScroll={({nativeEvent}) => {
                 const y = this.state.yAxis
                 this.setState({yAxis: nativeEvent.contentOffset.y}, () => {
-                  console.log(y, nativeEvent.contentOffset.y)
-                  if (
-                    nativeEvent.contentOffset.y === 0 ||
-                    y === 0 ||
-                    (y > nativeEvent.contentOffset.y && y !== nativeEvent.contentOffset.y)
-                  ) {
-                    this.setState({showButton: true})
-                  }
-                  if (
-                    nativeEvent.contentOffset.y !== 0 &&
-                    y !== 0 &&
-                    (y < nativeEvent.contentOffset.y || y === nativeEvent.contentOffset.y)
-                  ) {
+                  console.log(y)
+                  if (y < nativeEvent.contentOffset.y) {
                     this.setState({showButton: false})
+                  } else {
+                    this.setState({showButton: true})
                   }
                 })
               }}
-              onEndReached={() => this.setState({showButton: false})}
               data={groupedData}
               renderRow={this.renderRow}
             />
@@ -153,11 +150,7 @@ class MainScreen extends React.Component {
                 padding: 10,
                 borderRadius: 10,
               }}
-              onPress={() =>
-                this.props.user.user.id
-                  ? this.props.navigation.navigate('AddAdv')
-                  : alert('You are not logged in')
-              }>
+              onPress={() => this.props.navigation.navigate('AddAdv')}>
               <Icon name="plus-button" style={{color: 'white'}} />
               <Text style={{color: 'white'}}>Add advertisement</Text>
             </Button>
@@ -175,5 +168,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd}
-)(MainScreen)
+  {getAdsByBusiness, setAd}
+)(AdListPageScreen)

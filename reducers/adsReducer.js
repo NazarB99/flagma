@@ -7,6 +7,7 @@ import {
   GET_CATEGORIES,
   GET_CURRENCIES,
   GET_UNITS,
+  GET_ADS_BY_BUSINESS_ID,
 } from '../actions/type/types'
 
 const initialState = {
@@ -54,6 +55,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: true,
+      }
+    case GET_ADS_BY_BUSINESS_ID:
+      return {
+        ...state,
+        ads: action.payload.items,
+        loading: false,
       }
     default:
       return state
