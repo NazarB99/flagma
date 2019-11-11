@@ -10,18 +10,12 @@ import React from 'react'
 import {Dimensions} from 'react-native'
 import {
   View,
-  NavigationBar,
   GridRow,
-  TextInput,
   Button,
   Image,
   ListView,
-  Tile,
   TouchableOpacity,
   Card,
-  Subtitle,
-  ImageBackground,
-  Divider,
   Text,
   Icon,
   Caption,

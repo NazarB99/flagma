@@ -41,8 +41,8 @@ const DrawerNav = createDrawerNavigator(
     },
     overlayColor: 'rgba(0,0,0,0)',
     drawerType: 'front',
-    order: ['Login', 'Main', 'AddAdv'],
-    paths: ['Login', 'Main', 'AddAdv'],
+    order: ['Login', 'Main', 'AddAdv', 'AdListPage'],
+    paths: ['Login', 'Main', 'AddAdv', 'AdListPage'],
     // drawerLockMode: 'locked-open',
   }
 )
@@ -52,27 +52,37 @@ const MainStack = createStackNavigator(
     Drawer: {
       screen: DrawerNav,
       navigationOptions: ({navigation}) => {
+        const {onFocus, onBlur} = navigation.router.getPathAndParamsForState(
+          navigation.state
+        ).params
         return {
           headerStyle: {
             backgroundColor: MAIN_COLOR,
             height:
               navigation.router.getPathAndParamsForState(navigation.state).path === 'Login'
                 ? 0
-                : 50,
+                : 55,
           },
           headerLeft:
             navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
               <Hamburger
                 type="cross"
-                active={false}
+                active={
+                  navigation.state.params && navigation.state.params.active
+                    ? navigation.state.params.active
+                    : false
+                }
                 color="white"
                 onPress={() => {
-                  if (true) {
+                  if (!navigation.state.params) {
                     navigation.openDrawer()
-                    // setDrawerStatus(true)
-                  } else {
+                    navigation.setParams({active: true})
+                  } else if (navigation.state.params.active) {
                     navigation.closeDrawer()
-                    // setDrawerStatus(false)
+                    navigation.setParams({active: false})
+                  } else {
+                    navigation.openDrawer()
+                    navigation.setParams({active: true})
                   }
                 }}
                 underlayColor="transparent"
@@ -82,9 +92,11 @@ const MainStack = createStackNavigator(
             navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
               <TextInput
                 placeholder="Search Flagma"
+                onFocus={() => onFocus()}
+                onBlur={() => onBlur()}
                 style={{
                   backgroundColor: '#f5f5f5',
-                  width: Dimensions.get('window').width * 0.65,
+                  width: Dimensions.get('window').width * 0.7,
                   height: 40,
                   padding: 5,
                   borderRadius: 5,
@@ -114,41 +126,7 @@ const MainStack = createStackNavigator(
 const AppContainer = createAppContainer(MainStack)
 
 class App extends Component {
-  // state = {
-  //   container: false,
-  //   route: '',
-  // }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return (
-  //     nextState.container !== this.state.container ||
-  //     // nextState.container._navigation.router.getPathAndParamsForState(
-  //     //   nextState.container._navigation.state
-  //     // ).path !== this.getCurrentRoute() ||
-  //     nextState.route !== this.state.route
-  //   )
-  // }
-
-  // getCurrentRoute = () => {
-  //   this.setState({
-  //     route: this.state.container._navigation.router.getPathAndParamsForState(
-  //       this.state.container._navigation.state
-  //     ).path,
-  //   })
-  //   return this.state.container._navigation.router.getPathAndParamsForState(
-  //     this.state.container._navigation.state
-  //   ).path
-  // }
-
   render() {
-    // console.log(this.state.container._navigation)
-    // if (this.state.container._navigation) {
-    //   console.log(
-    //     this.state.container._navigation.router.getPathAndParamsForState(
-    //       this.state.container._navigation.state
-    //     )
-    //   )
-    // }
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

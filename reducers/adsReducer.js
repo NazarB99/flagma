@@ -11,7 +11,8 @@ import {
 } from '../actions/type/types'
 
 const initialState = {
-  ads: {},
+  ads: [],
+  filtered_ads: [],
   selected_ad: {},
   loading: false,
   categories: [],
@@ -59,7 +60,7 @@ export default function(state = initialState, action) {
     case GET_ADS_BY_BUSINESS_ID:
       return {
         ...state,
-        ads: action.payload.items,
+        filtered_ads: action.payload.items,
         loading: false,
       }
     default:

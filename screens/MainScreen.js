@@ -45,6 +45,11 @@ class MainScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.props.navigation.setParams({
+      searchInputIsFocused: false,
+      onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),
+      onBlur: () => this.props.navigation.setParams({searchInputIsFocused: false}),
+    })
     const data = {
       id: 1,
       page: 1,
@@ -104,7 +109,6 @@ class MainScreen extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     const {ads} = this.props.ads
     const groupedData = GridRow.groupByRows(ads, 2, () => 1)
     return (
@@ -143,6 +147,20 @@ class MainScreen extends React.Component {
             />
           </View>
         )}
+        {this.props.navigation.getParam('searchInputIsFocused') ? (
+          <View
+            style={{
+              position: 'absolute',
+              top: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Button style={{width: Dimensions.get('window').width * 0.6}}>
+              <Icon name="receipt" color="#4a97f1" size={28} />
+              <Title>Search by category</Title>
+            </Button>
+          </View>
+        ) : null}
         {this.state.showButton ? (
           <View style={{position: 'absolute', bottom: 10, alignSelf: 'center'}}>
             <Button
