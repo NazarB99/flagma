@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.flagma"
+        applicationId "com.flagmacustom"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2

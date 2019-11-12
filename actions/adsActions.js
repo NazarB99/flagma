@@ -13,6 +13,7 @@ import {
   GET_ADS_BY_BUSINESS_ID,
   GET_ADS_BY_CATEGORY_ID,
   SET_CATEGORY,
+  GET_ADS_BY_SEARCH,
 } from './type/types'
 
 export const getAdsByCatId = data => async dispatch => {
@@ -110,4 +111,21 @@ export const getAdsByCategory = (token, data) => async dispatch => {
     `get_ads_by_category_id?cat_id=${data.id}&page=${data.page}&per_page=${data.per_page}`
   )
   dispatch({type: GET_ADS_BY_CATEGORY_ID, payload: response})
+}
+
+export const searchAdvs = data => async dispatch => {
+  console.log(data)
+  const response = await getCallApi(
+    `get_ads_by_search?word=${data.word}&page=${data.page}&per_page=${data.per_page}`
+  )
+  console.log(response)
+  dispatch({type: GET_ADS_BY_SEARCH, payload: response})
+
+  return new Promise((resolve, reject) => {
+    if (response.items.length > 0) {
+      resolve()
+    } else {
+      reject()
+    }
+  })
 }

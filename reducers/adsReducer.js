@@ -10,6 +10,7 @@ import {
   GET_ADS_BY_BUSINESS_ID,
   GET_ADS_BY_CATEGORY_ID,
   SET_CATEGORY,
+  GET_ADS_BY_SEARCH,
 } from '../actions/type/types'
 
 const initialState = {
@@ -72,6 +73,12 @@ export default function(state = initialState, action) {
         loading: false,
       }
     case GET_ADS_BY_CATEGORY_ID:
+      return {
+        ...state,
+        filtered_ads: action.payload.items,
+        loading: false,
+      }
+    case GET_ADS_BY_SEARCH:
       return {
         ...state,
         filtered_ads: action.payload.items,

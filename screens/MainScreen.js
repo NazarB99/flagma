@@ -29,7 +29,7 @@ import {
 import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
-import {getAdsByCatId, setAd, setCategory} from '../actions/adsActions'
+import {getAdsByCatId, setAd, setCategory, searchAdvs} from '../actions/adsActions'
 import CategoryModal from '../components/CategoryModal'
 import Loading from '../components/Loading'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
@@ -52,6 +52,18 @@ class MainScreen extends React.Component {
       onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),
       onBlur: () => this.props.navigation.setParams({searchInputIsFocused: false}),
       onType: () => this.props.navigation.setParams({searchInputIsFocused: false}),
+      onSubmitEditing: text => {
+        console.log(text)
+        const data = {
+          word: text,
+          page: 1,
+          per_page: 20,
+        }
+        this.props
+          .searchAdvs(data)
+          .then(() => this.props.navigation.navigate('AdListPage'))
+          .catch(() => alert('No result'))
+      },
     })
     const data = {
       id: 1,
@@ -229,5 +241,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd, setCategory}
+  {getAdsByCatId, setAd, setCategory, searchAdvs}
 )(MainScreen)

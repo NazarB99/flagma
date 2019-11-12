@@ -46,15 +46,20 @@ const DrawerNav = createDrawerNavigator(
     // drawerLockMode: 'locked-open',
   }
 )
-
+// navigation.state.params && navigation.state.params.active
+//                     ? navigation.state.params.active
+//                     : false
 const MainStack = createStackNavigator(
   {
     Drawer: {
       screen: DrawerNav,
       navigationOptions: ({navigation}) => {
-        const {onFocus, onBlur, onType} = navigation.router.getPathAndParamsForState(
-          navigation.state
-        ).params
+        const {
+          onFocus,
+          onBlur,
+          onType,
+          onSubmitEditing,
+        } = navigation.router.getPathAndParamsForState(navigation.state).params
         return {
           headerStyle: {
             backgroundColor: MAIN_COLOR,
@@ -67,11 +72,7 @@ const MainStack = createStackNavigator(
             navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
               <Hamburger
                 type="cross"
-                active={
-                  navigation.state.params && navigation.state.params.active
-                    ? navigation.state.params.active
-                    : false
-                }
+                active={navigation.state.isDrawerOpen}
                 color="white"
                 onPress={() => {
                   if (!navigation.state.params) {
@@ -94,6 +95,7 @@ const MainStack = createStackNavigator(
                 placeholder="Search Flagma"
                 onFocus={() => onFocus()}
                 onBlur={() => onBlur()}
+                onSubmitEditing={({nativeEvent}) => onSubmitEditing(nativeEvent.text)}
                 onChangeText={text => {
                   if (text !== '') {
                     onType()

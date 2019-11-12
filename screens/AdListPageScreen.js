@@ -30,7 +30,7 @@ import {
 import {connect} from 'react-redux'
 import Hamburger from 'react-native-animated-hamburger'
 
-import {getAdsByBusiness, getAdsByCategory, setAd} from '../actions/adsActions'
+import {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
 import Loading from '../components/Loading'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
@@ -50,6 +50,18 @@ class AdListPageScreen extends React.Component {
       onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),
       onBlur: () => this.props.navigation.setParams({searchInputIsFocused: false}),
       onType: () => this.props.navigation.setParams({searchInputIsFocused: false}),
+      onSubmitEditing: text => {
+        console.log(text)
+        const data = {
+          word: text,
+          page: 1,
+          per_page: 20,
+        }
+        this.props
+          .searchAdvs(data)
+          .then(() => this.props.navigation.navigate('AdListPage'))
+          .catch(() => alert('No result'))
+      },
     })
     const type = this.props.navigation.getParam('type')
     const data = {
@@ -67,10 +79,13 @@ class AdListPageScreen extends React.Component {
       if (this.props.ads.currencies.length > 0) {
         this.setState({loading: false})
       }
-    } else {
+    } else if (type && type === 'category') {
       this.props
         .getAdsByCategory(this.props.user.user.token, data)
         .then(() => this.setState({loading: false}))
+    }
+    if (this.props.ads.filtered_ads.length > 0) {
+      this.setState({loading: false})
     }
   }
 
@@ -182,5 +197,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByBusiness, getAdsByCategory, setAd}
+  {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs}
 )(AdListPageScreen)
