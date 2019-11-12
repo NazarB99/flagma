@@ -27,9 +27,10 @@ import {
   Title,
 } from '@shoutem/ui'
 import {connect} from 'react-redux'
+import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
-import {getAdsByCatId, setAd} from '../actions/adsActions'
-import Navbar from '../components/Navbar'
+import {getAdsByCatId, setAd, setCategory} from '../actions/adsActions'
+import CategoryModal from '../components/CategoryModal'
 import Loading from '../components/Loading'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
 
@@ -38,6 +39,7 @@ class MainScreen extends React.Component {
     loading: false,
     yAxis: 0,
     showButton: true,
+    categoryModal: false,
   }
 
   componentWillMount() {
@@ -49,6 +51,7 @@ class MainScreen extends React.Component {
       searchInputIsFocused: false,
       onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),
       onBlur: () => this.props.navigation.setParams({searchInputIsFocused: false}),
+      onType: () => this.props.navigation.setParams({searchInputIsFocused: false}),
     })
     const data = {
       id: 1,
@@ -108,6 +111,22 @@ class MainScreen extends React.Component {
     return <GridRow columns={2}>{cellViews}</GridRow>
   }
 
+  openCategoryModal = () => {
+    this.setState({categoryModal: true})
+  }
+
+  closeCategoryModal = () => {
+    this.setState({categoryModal: false})
+  }
+
+  setCategory = cat => {
+    this.closeCategoryModal()
+    this.props.setCategory(cat)
+    this.props.navigation.navigate('AdListPage', {
+      type: 'category',
+    })
+  }
+
   render() {
     const {ads} = this.props.ads
     const groupedData = GridRow.groupByRows(ads, 2, () => 1)
@@ -147,17 +166,34 @@ class MainScreen extends React.Component {
             />
           </View>
         )}
+        <CategoryModal
+          setCategory={this.setCategory}
+          categories={this.props.ads.categories}
+          isVisible={this.state.categoryModal}
+          closeModal={this.closeCategoryModal}
+        />
         {this.props.navigation.getParam('searchInputIsFocused') ? (
           <View
             style={{
               position: 'absolute',
               top: 10,
+              left: Dimensions.get('window').width * 0.2,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Button style={{width: Dimensions.get('window').width * 0.6}}>
-              <Icon name="receipt" color="#4a97f1" size={28} />
-              <Title>Search by category</Title>
+            <Button
+              onPress={this.openCategoryModal}
+              style={{
+                width: Dimensions.get('window').width * 0.6,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderColor: '#999999',
+                borderWidth: 0.7,
+                borderRadius: 3,
+                backgroundColor: '#f8f9fc',
+              }}>
+              <FontAwesome name="cubes" color="#4a97f1" size={28} />
+              <Title style={{marginLeft: 10}}>Search by category</Title>
             </Button>
           </View>
         ) : null}
@@ -193,5 +229,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd}
+  {getAdsByCatId, setAd, setCategory}
 )(MainScreen)

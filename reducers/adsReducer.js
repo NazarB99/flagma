@@ -8,12 +8,15 @@ import {
   GET_CURRENCIES,
   GET_UNITS,
   GET_ADS_BY_BUSINESS_ID,
+  GET_ADS_BY_CATEGORY_ID,
+  SET_CATEGORY,
 } from '../actions/type/types'
 
 const initialState = {
   ads: [],
   filtered_ads: [],
   selected_ad: {},
+  selected_category: {},
   loading: false,
   categories: [],
   currencies: [],
@@ -57,7 +60,18 @@ export default function(state = initialState, action) {
         ...state,
         loading: true,
       }
+    case SET_CATEGORY:
+      return {
+        ...state,
+        selected_category: action.payload,
+      }
     case GET_ADS_BY_BUSINESS_ID:
+      return {
+        ...state,
+        filtered_ads: action.payload.items,
+        loading: false,
+      }
+    case GET_ADS_BY_CATEGORY_ID:
       return {
         ...state,
         filtered_ads: action.payload.items,

@@ -35,7 +35,7 @@ const DrawerNav = createDrawerNavigator(
     initialRouteName: 'Login',
     drawerBackgroundColor: 'rgba(255,255,255,1)',
     contentOptions: {
-      items: ['Login', 'Main', 'AddAdv'],
+      items: ['Login', 'Main', 'AddAdv', 'AdListPage'],
       activeTintColor: '#fff',
       activeBackgroundColor: MAIN_COLOR,
     },
@@ -52,7 +52,7 @@ const MainStack = createStackNavigator(
     Drawer: {
       screen: DrawerNav,
       navigationOptions: ({navigation}) => {
-        const {onFocus, onBlur} = navigation.router.getPathAndParamsForState(
+        const {onFocus, onBlur, onType} = navigation.router.getPathAndParamsForState(
           navigation.state
         ).params
         return {
@@ -94,6 +94,13 @@ const MainStack = createStackNavigator(
                 placeholder="Search Flagma"
                 onFocus={() => onFocus()}
                 onBlur={() => onBlur()}
+                onChangeText={text => {
+                  if (text !== '') {
+                    onType()
+                  } else {
+                    onFocus()
+                  }
+                }}
                 style={{
                   backgroundColor: '#f5f5f5',
                   width: Dimensions.get('window').width * 0.7,

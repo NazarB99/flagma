@@ -11,6 +11,8 @@ import {
   GET_CURRENCIES,
   GET_UNITS,
   GET_ADS_BY_BUSINESS_ID,
+  GET_ADS_BY_CATEGORY_ID,
+  SET_CATEGORY,
 } from './type/types'
 
 export const getAdsByCatId = data => async dispatch => {
@@ -33,6 +35,10 @@ export const getAdsByCatId = data => async dispatch => {
 
 export const setAd = ad => async dispatch => {
   dispatch({type: SET_AD, payload: ad})
+}
+
+export const setCategory = cat => async dispatch => {
+  dispatch({type: SET_CATEGORY, payload: cat})
 }
 
 export const getCategories = () => async dispatch => {
@@ -96,4 +102,12 @@ export const getAdsByBusiness = (token, data) => async dispatch => {
     `get_ads_by_user_id?user_id=${data.id}&page=${data.page}&per_page=${data.per_page}`
   )
   dispatch({type: GET_ADS_BY_BUSINESS_ID, payload: response})
+}
+
+export const getAdsByCategory = (token, data) => async dispatch => {
+  console.log(data)
+  const response = await getCallApi(
+    `get_ads_by_category_id?cat_id=${data.id}&page=${data.page}&per_page=${data.per_page}`
+  )
+  dispatch({type: GET_ADS_BY_CATEGORY_ID, payload: response})
 }
