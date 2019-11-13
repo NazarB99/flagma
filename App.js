@@ -41,8 +41,8 @@ const DrawerNav = createDrawerNavigator(
     },
     overlayColor: 'rgba(0,0,0,0)',
     drawerType: 'front',
-    order: ['Login', 'Main', 'AddAdv', 'AdListPage'],
-    paths: ['Login', 'Main', 'AddAdv', 'AdListPage'],
+    order: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register'],
+    paths: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register'],
     // drawerLockMode: 'locked-open',
   }
 )

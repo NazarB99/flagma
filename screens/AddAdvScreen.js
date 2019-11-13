@@ -32,6 +32,7 @@ class AddAdvScreen extends Component {
     type: {},
     unit: {},
     currency: {},
+    local_images: [],
     images: [],
     description: '',
     retail_price: '',
@@ -80,12 +81,14 @@ class AddAdvScreen extends Component {
         }
         const dataNew = new FormData()
         dataNew.append(response.fileName, source)
+        const prevLocalImage = this.state.local_images
         const prevImage = this.state.images
         uploadFile(this.props.token, dataNew)
           .then(res => {
             console.log(res)
             this.setState({
               images: prevImage.concat(res),
+              local_images: prevLocalImage.concat(response.uri),
             })
           })
           .catch(() => alert('Error ocurred'))
@@ -149,7 +152,11 @@ class AddAdvScreen extends Component {
                 <Title>Pick image</Title>
               </Button>
               {this.state.images.length > 0 ? (
-                <Image styleName="medium-square" source={{uri: this.state.imageUri}} />
+                <View style={{flexDirection: 'row'}}>
+                  {this.state.local_images.map(item => {
+                    return <Image styleName="medium-square" source={{uri: item}} />
+                  })}
+                </View>
               ) : null}
             </View>
             <TextInput

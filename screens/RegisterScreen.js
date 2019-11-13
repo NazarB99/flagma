@@ -31,12 +31,12 @@ const styles = StyleSheet.create({
 })
 
 class RegisterScreen extends React.Component {
-  // static navigationOptions = ({navigation}) => {
-  //   return {
-  //     drawerIcon: () => null,
-  //     drawerLabel: () => null,
-  //   }
-  // }
+  static navigationOptions = ({navigation}) => {
+    return {
+      drawerIcon: () => null,
+      drawerLabel: () => null,
+    }
+  }
 
   state = {
     active: false,
