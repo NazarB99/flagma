@@ -4,6 +4,7 @@
 import {postCallApi, getCallApi} from '../config/ApiCalls'
 
 import {
+  FETCH_USER,
   SET_LOADING,
   ADS_FETCHED,
   SET_AD,
@@ -126,6 +127,21 @@ export const searchAdvs = data => async dispatch => {
       resolve()
     } else {
       reject()
+    }
+  })
+}
+
+export const setAccountModification = (token, data) => async dispatch => {
+  const response = await postCallApi(`modify_account`, token, data)
+  console.log(response)
+  // dispatch({type: GET_ADS_BY_SEARCH, payload: response})
+
+  return new Promise((resolve, reject) => {
+    if (response.id) {
+      resolve()
+      dispatch({type: FETCH_USER, payload: response})
+    } else {
+      reject(response)
     }
   })
 }

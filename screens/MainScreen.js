@@ -29,6 +29,7 @@ import {
 import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
+import {login} from '../actions/userActions'
 import {getAdsByCatId, setAd, setCategory, searchAdvs} from '../actions/adsActions'
 import CategoryModal from '../components/CategoryModal'
 import Loading from '../components/Loading'
@@ -47,6 +48,7 @@ class MainScreen extends React.Component {
   }
 
   componentDidMount() {
+    // this.props.login('demortv22@gmail.com', 'demor')
     this.props.navigation.setParams({
       searchInputIsFocused: false,
       onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),
@@ -241,5 +243,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd, setCategory, searchAdvs}
+  {getAdsByCatId, setAd, setCategory, searchAdvs, login}
 )(MainScreen)

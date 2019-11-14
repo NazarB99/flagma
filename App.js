@@ -13,6 +13,7 @@ import {PersistGate} from 'redux-persist/integration/react'
 import {Button, Image, TextInput} from '@shoutem/ui'
 import Hamburger from 'react-native-animated-hamburger'
 
+import DrawerContent from './components/DrawerContent'
 import {MAIN_COLOR, ORANGE_COLOR} from './config/Constants'
 import {store, persistor} from './store'
 import NavigationService from './components/NavigationService'
@@ -22,6 +23,7 @@ import MainScreen from './screens/MainScreen'
 import AdScreen from './screens/AdScreen'
 import AddAdvScreen from './screens/AddAdvScreen'
 import AdListPageScreen from './screens/AdListPageScreen'
+import AccountScreen from './screens/AccountScreen'
 
 const DrawerNav = createDrawerNavigator(
   {
@@ -30,6 +32,7 @@ const DrawerNav = createDrawerNavigator(
     Main: MainScreen,
     AddAdv: AddAdvScreen,
     AdListPage: AdListPageScreen,
+    Account: AccountScreen,
   },
   {
     initialRouteName: 'Login',
@@ -39,10 +42,11 @@ const DrawerNav = createDrawerNavigator(
       activeTintColor: '#fff',
       activeBackgroundColor: MAIN_COLOR,
     },
+    contentComponent: props => <DrawerContent {...props} />,
     overlayColor: 'rgba(0,0,0,0)',
     drawerType: 'front',
-    order: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register'],
-    paths: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register'],
+    order: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register', 'Account'],
+    paths: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register', 'Account'],
     // drawerLockMode: 'locked-open',
   }
 )
