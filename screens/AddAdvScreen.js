@@ -42,9 +42,9 @@ class AddAdvScreen extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.id) {
+    if (!this.props.id || !this.props.is_verified) {
       this.props.navigation.replace('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
-      alert('You are not logged in')
+      alert('You are not logged in or not verified')
     }
     this.setState({
       category: this.props.categories[0],
@@ -315,6 +315,7 @@ const mapStateToProps = state => ({
   units: state.ads.units,
   token: state.user.user.token,
   id: state.user.user.id,
+  is_verified: state.user.user.is_verified,
 })
 
 export default connect(

@@ -9,6 +9,7 @@ import React from 'react'
 import {StyleSheet} from 'react-native'
 import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 import {connect} from 'react-redux'
+import {NavigationActions} from 'react-navigation'
 
 import Loading from '../components/Loading'
 import {registration, startVerification} from '../actions/userActions'
@@ -87,7 +88,21 @@ class RegisterScreen extends React.Component {
       password: this.state.password,
       code: this.state.passCode,
     }
-    this.props.registration(data).then(() => this.setState({loading: false}))
+    this.props
+      .registration(data)
+      .then(() => {
+        this.setState({loading: false})
+        alert('Now you can login')
+        this.props.navigation.replace(
+          'Drawer',
+          {},
+          NavigationActions.navigate({routeName: 'Login'})
+        )
+      })
+      .catch(err => {
+        alert(err)
+        this.setState({loading: false, code: false})
+      })
   }
 
   startVer = () => {

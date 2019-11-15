@@ -13,7 +13,7 @@ import {connect} from 'react-redux'
 import {NavigationActions} from 'react-navigation'
 
 import Loading from '../components/Loading'
-import {login} from '../actions/userActions'
+import {login, logout} from '../actions/userActions'
 import {getCategories, getCurrencies, getUnits} from '../actions/adsActions'
 
 const styles = StyleSheet.create({
@@ -64,7 +64,7 @@ class LoginScreen extends React.Component {
         active: this.state.active,
       })
     }
-    if (this.props.user.user.id && this.props.user.user.is_verified) {
+    if (this.props.user.user.id) {
       this.props.navigation.navigate('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
     }
   }
@@ -85,12 +85,19 @@ class LoginScreen extends React.Component {
 
   logIn = () => {
     this.setState({loading: true})
-    this.props.login(this.state.email, this.state.password).then(res => {
-      this.setState({loading: false})
-      if (!this.props.user.user.is_verified) {
-        alert('Your account is not verified')
-      }
-    })
+    this.props
+      .login(this.state.email, this.state.password)
+      .then(res => {
+        this.setState({loading: false})
+        // if (!this.props.user.user.is_verified) {
+        //   alert('Your account is not verified')
+        //   this.props.logout()
+        // }
+      })
+      .catch(err => {
+        this.setState({loading: false})
+        alert(err)
+      })
   }
 
   render() {
@@ -165,6 +172,7 @@ export default connect(
   mapStateToProps,
   {
     login,
+    logout,
     getCategories,
     getCurrencies,
     getUnits,

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 import {postCallApi, getCallApi} from '../config/ApiCalls'
 
-import {SET_LOADING, FETCH_USER} from './type/types'
+import {SET_LOADING, FETCH_USER, LOGOUT} from './type/types'
 
 export const login = (email, password) => async dispatch => {
   dispatch({type: SET_LOADING})
@@ -15,7 +15,7 @@ export const login = (email, password) => async dispatch => {
 
   return new Promise((resolve, reject) => {
     if (response.type === 'error') {
-      reject(response.code_ru)
+      reject(response.code_en)
     } else {
       resolve(response)
     }
@@ -30,7 +30,7 @@ export const registration = data => async dispatch => {
 
   return new Promise((resolve, reject) => {
     if (response.type === 'error') {
-      reject(response.code_ru)
+      reject(response.code_en)
     } else {
       resolve()
     }
@@ -47,4 +47,8 @@ export const startVerification = email => async dispatch => {
       reject('Not verified')
     }
   })
+}
+
+export const logout = () => async dispatch => {
+  dispatch({type: LOGOUT})
 }

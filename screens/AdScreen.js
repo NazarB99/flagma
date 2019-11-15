@@ -6,11 +6,13 @@
 /* eslint-disable react/jsx-no-undef */
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Image, Dimensions} from 'react-native'
+import {Image, Dimensions, Linking} from 'react-native'
 import {Title, Caption, View, Text, Button} from '@shoutem/ui'
 import {SliderBox} from 'react-native-image-slider-box'
 import moment from 'moment'
 import Carousel from 'react-native-snap-carousel'
+
+import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
 
 class AdScreen extends Component {
   imagesForGallery = () => {
@@ -41,7 +43,7 @@ class AdScreen extends Component {
   render() {
     console.log(this.props.ad)
     return (
-      <View style={{paddingHorizontal: 5}}>
+      <View style={{flex: 1, paddingHorizontal: 5}}>
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <Carousel
             ref={c => {
@@ -124,6 +126,34 @@ class AdScreen extends Component {
               style={{color: '#000', fontSize: 16, textTransform: 'uppercase'}}>
               21
             </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 10,
+            left: Dimensions.get('window').width * 0.05,
+          }}>
+          <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+            <Button
+              onPress={() => Linking.openURL(`tel:${this.props.ad.phone}`)}
+              style={{
+                backgroundColor: MAIN_COLOR,
+                paddingTop: 10,
+                paddingBottom: 10,
+                width: Dimensions.get('window').width * 0.45,
+              }}>
+              <Text style={{color: 'white'}}>Call</Text>
+            </Button>
+            <Button
+              style={{
+                backgroundColor: ORANGE_COLOR,
+                paddingTop: 10,
+                paddingBottom: 10,
+                width: Dimensions.get('window').width * 0.45,
+              }}>
+              <Text style={{color: 'white'}}>In-app Message</Text>
+            </Button>
           </View>
         </View>
       </View>
