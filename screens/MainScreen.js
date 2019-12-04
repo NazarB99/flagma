@@ -30,10 +30,19 @@ import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
 import {login} from '../actions/userActions'
+import {setUnreadCount} from '../actions/chatActions'
 import {getAdsByCatId, setAd, setCategory, searchAdvs} from '../actions/adsActions'
 import CategoryModal from '../components/CategoryModal'
 import Loading from '../components/Loading'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
+import {
+  connectSocket,
+  joinMe,
+  clearSubscriptions,
+  setUnreadCountSocket,
+  messageAddOneCount,
+  getUnreadCount,
+} from '../config/Socket'
 
 class MainScreen extends React.Component {
   state = {
@@ -75,6 +84,14 @@ class MainScreen extends React.Component {
     this.props.getAdsByCatId(data).then(() => this.setState({loading: false}))
     if (this.props.ads.currencies.length > 0) {
       this.setState({loading: false})
+    }
+    if (this.props.user.user.id) {
+      connectSocket(this.props.user.user.id)
+      clearSubscriptions()
+      joinMe(this.props.user.user.id)
+      getUnreadCount(this.props.user.user.id)
+      setUnreadCountSocket(count => this.props.setUnreadCount(count))
+      messageAddOneCount(() => this.props.addToCount())
     }
   }
 
@@ -243,5 +260,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd, setCategory, searchAdvs, login}
+  {getAdsByCatId, setAd, setCategory, searchAdvs, login, setUnreadCount}
 )(MainScreen)

@@ -146,6 +146,12 @@ class AdScreen extends Component {
               <Text style={{color: 'white'}}>Call</Text>
             </Button>
             <Button
+              onPress={() => {
+                // this.props.setOpponentId(this.props)
+                this.props.navigation.navigate('Chat', {
+                  receiver_id: this.props.ad.business_id,
+                })
+              }}
               style={{
                 backgroundColor: ORANGE_COLOR,
                 paddingTop: 10,

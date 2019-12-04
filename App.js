@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable consistent-return */
 /* eslint-disable react/destructuring-assignment */
@@ -13,6 +14,7 @@ import {PersistGate} from 'redux-persist/integration/react'
 import {Button, Image, TextInput} from '@shoutem/ui'
 import Hamburger from 'react-native-animated-hamburger'
 
+import {init} from './config/Socket'
 import DrawerContent from './components/DrawerContent'
 import {MAIN_COLOR, ORANGE_COLOR} from './config/Constants'
 import {store, persistor} from './store'
@@ -24,6 +26,7 @@ import AdScreen from './screens/AdScreen'
 import AddAdvScreen from './screens/AddAdvScreen'
 import AdListPageScreen from './screens/AdListPageScreen'
 import AccountScreen from './screens/AccountScreen'
+import ChatScreen from './screens/ChatScreen'
 
 const DrawerNav = createDrawerNavigator(
   {
@@ -33,6 +36,7 @@ const DrawerNav = createDrawerNavigator(
     AddAdv: AddAdvScreen,
     AdListPage: AdListPageScreen,
     Account: AccountScreen,
+    Chat: ChatScreen,
   },
   {
     initialRouteName: 'Login',
@@ -45,8 +49,8 @@ const DrawerNav = createDrawerNavigator(
     contentComponent: props => <DrawerContent {...props} />,
     overlayColor: 'rgba(0,0,0,0)',
     drawerType: 'front',
-    order: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register', 'Account'],
-    paths: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register', 'Account'],
+    order: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register', 'Account', 'Chat'],
+    paths: ['Login', 'Main', 'AddAdv', 'AdListPage', 'Register', 'Account', 'Chat'],
     // drawerLockMode: 'locked-open',
   }
 )
@@ -139,6 +143,10 @@ const MainStack = createStackNavigator(
 const AppContainer = createAppContainer(MainStack)
 
 class App extends Component {
+  componentDidMount() {
+    init()
+  }
+
   render() {
     return (
       <Provider store={store}>

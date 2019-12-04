@@ -3,7 +3,7 @@
 import socketIO from 'socket.io-client/dist/socket.io'
 
 export const init = () => {
-  this.socket = socketIO('http://stoptub.tk:8081', {
+  this.socket = socketIO('http://flagma.tk:3000', {
     transports: ['websocket'],
     jsonp: false,
   })
@@ -25,7 +25,6 @@ export const sendMessage = (data, pushMessage) => {
 export const messageListener = (pushMessage, users) => {
   this.socket.on('message', message => {
     console.log('Message listenerrrrrtrrrrrrrrrrrrrrrrr')
-    console.log(message)
     if (
       (message.receiver_id === users.receiver_id && message.sender_id === users.sender_id) ||
       (message.sender_id === users.receiver_id && message.receiver_id === users.sender_id)
@@ -35,22 +34,9 @@ export const messageListener = (pushMessage, users) => {
   })
 }
 
-export const updateCount = updateCountUser => {
-  this.socket.on('count_message', sender_id => {
-    updateCountUser(sender_id)
-  })
-}
-
 export const joinMe = id => {
   this.socket.on('join_me', () => {
     this.socket.emit('user_joined', id)
-  })
-}
-
-export const logAdded = pushLog => {
-  this.socket.on('action', log => {
-    console.log(log)
-    pushLog(log)
   })
 }
 
@@ -58,6 +44,22 @@ export const messageRead = messagesRead => {
   this.socket.on('message_read', data => {
     messagesRead(data)
   })
+}
+
+export const messageAddOneCount = addToCount => {
+  this.socket.on('count_message', () => {
+    addToCount()
+  })
+}
+
+export const setUnreadCountSocket = setUnreadCount => {
+  this.socket.on('send_unread_count', count => {
+    setUnreadCount(count)
+  })
+}
+
+export const getUnreadCount = user_id => {
+  this.socket.emit('send_me_unread_count', user_id)
 }
 
 export const clearSubscriptions = () => {
