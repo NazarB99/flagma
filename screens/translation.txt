@@ -1,0 +1,47 @@
+Registration
+Create new account.
+Submit
+Or you can login here
+Password
+Code
+No result
+15man/item
+You are not logged in
+Add advertisement
+Search by category
+Login
+Welcome back!
+Or you can register here
+Proceed without login
+Audio permission denied
+In-app Message
+Call
+All advetisements of this company:
+Description
+Posted at + (date)
+Add advertisement
+Retail Price
+Name
+You are neither logged in nor verified
+Service
+Product
+Error ocurred
+Your ad will be posted after review
+Pick image
+Business Description
+Website
+Employee count
+Foundation year
+Phone
+Address
+City
+Region
+Country
+Company Name
+Account info
+Max whole. price
+Min whole.
+Select Avatar
+E-mail is too short
+Now you can login
+Search by category

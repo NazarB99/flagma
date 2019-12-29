@@ -15,6 +15,7 @@ import {
   GET_ADS_BY_CATEGORY_ID,
   SET_CATEGORY,
   GET_ADS_BY_SEARCH,
+  GET_ADS_BY_FILTER,
 } from './type/types'
 
 export const getAdsByCatId = data => async dispatch => {
@@ -144,4 +145,15 @@ export const setAccountModification = (token, data) => async dispatch => {
       reject(response)
     }
   })
+}
+
+export const filterAds = data => async dispatch => {
+  console.log(data)
+  const response = await getCallApi(
+    `get_ads_by_filter?cat_id=${data.cat_id}&price_min=${data.price_min}&price_max=${data.price_max}&type=${data.type}&unit_id=${data.unit_id}&currency_id=${data.currency_id}&country=${data.country}&page=${data.page}&per_page=${data.per_page}`
+  )
+
+  console.log(response)
+
+  dispatch({type: GET_ADS_BY_FILTER, payload: response})
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable consistent-return */
@@ -8,11 +9,17 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, {Component} from 'react'
 import {View, Dimensions} from 'react-native'
-import {createAppContainer, createDrawerNavigator, createStackNavigator} from 'react-navigation'
+import {
+  createAppContainer,
+  createDrawerNavigator,
+  createStackNavigator,
+  NavigationActions,
+} from 'react-navigation'
 import {Provider} from 'react-redux'
 import {PersistGate} from 'redux-persist/integration/react'
 import {Button, Image, TextInput} from '@shoutem/ui'
 import Hamburger from 'react-native-animated-hamburger'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 import {init} from './config/Socket'
 import DrawerContent from './components/DrawerContent'
@@ -27,6 +34,7 @@ import AddAdvScreen from './screens/AddAdvScreen'
 import AdListPageScreen from './screens/AdListPageScreen'
 import AccountScreen from './screens/AccountScreen'
 import ChatScreen from './screens/ChatScreen'
+import FilterScreen from './screens/FilterScreen'
 
 const DrawerNav = createDrawerNavigator(
   {
@@ -77,7 +85,10 @@ const MainStack = createStackNavigator(
                 : 55,
           },
           headerLeft:
-            navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
+            navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ||
+            navigation.router.getPathAndParamsForState(navigation.state).path ===
+              'Register' ? null : navigation.router.getPathAndParamsForState(navigation.state)
+                .path !== 'Chat' ? (
               <Hamburger
                 type="cross"
                 active={navigation.state.isDrawerOpen}
@@ -96,9 +107,18 @@ const MainStack = createStackNavigator(
                 }}
                 underlayColor="transparent"
               />
+            ) : (
+              <Button
+                style={{backgroundColor: 'transparent', borderWidth: 0}}
+                onPress={() => navigation.replace('Drawer')}>
+                <Icon name="arrow-left" size={26} color="white" />
+              </Button>
             ),
           headerTitle:
-            navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
+            navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ||
+            navigation.router.getPathAndParamsForState(navigation.state).path ===
+              'Register' ? null : navigation.router.getPathAndParamsForState(navigation.state)
+                .path !== 'Chat' ? (
               <TextInput
                 placeholder="Search Flagma"
                 onFocus={() => onFocus()}
@@ -120,7 +140,7 @@ const MainStack = createStackNavigator(
                   marginBottom: 3,
                 }}
               />
-            ),
+            ) : null,
           headerRight:
             navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
               <Button style={{height: 30, width: 30, marginRight: 10, padding: 0}}>
@@ -134,6 +154,7 @@ const MainStack = createStackNavigator(
       },
     },
     Ad: AdScreen,
+    Filter: FilterScreen,
   },
   {
     initialRouteName: 'Drawer',

@@ -55,6 +55,8 @@ export class ChatScreen extends Component {
     headerTitleStyle: {
       color: ORANGE_COLOR,
     },
+    drawerIcon: () => null,
+    drawerLabel: () => null,
     headerTintColor: ORANGE_COLOR,
     headerRight: (
       <Button

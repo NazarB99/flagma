@@ -30,7 +30,7 @@ import {connect} from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
 import {login} from '../actions/userActions'
-import {setUnreadCount} from '../actions/chatActions'
+import {setUnreadCount, addToCount} from '../actions/chatActions'
 import {getAdsByCatId, setAd, setCategory, searchAdvs} from '../actions/adsActions'
 import CategoryModal from '../components/CategoryModal'
 import Loading from '../components/Loading'
@@ -226,6 +226,20 @@ class MainScreen extends React.Component {
               <FontAwesome name="cubes" color="#4a97f1" size={28} />
               <Title style={{marginLeft: 10}}>Search by category</Title>
             </Button>
+            <Button
+              onPress={() => this.props.navigation.navigate('Filter')}
+              style={{
+                width: Dimensions.get('window').width * 0.6,
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderColor: '#999999',
+                borderWidth: 0.7,
+                borderRadius: 3,
+                backgroundColor: '#f8f9fc',
+              }}>
+              <FontAwesome name="filter" color="#4a97f1" size={28} />
+              <Title style={{marginLeft: 10}}>Filter ads</Title>
+            </Button>
           </View>
         ) : null}
         {this.state.showButton ? (
@@ -260,5 +274,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd, setCategory, searchAdvs, login, setUnreadCount}
+  {getAdsByCatId, setAd, setCategory, searchAdvs, login, setUnreadCount, addToCount}
 )(MainScreen)
