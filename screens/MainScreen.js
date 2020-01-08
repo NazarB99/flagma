@@ -6,7 +6,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
-import {Dimensions} from 'react-native'
+import {Dimensions, TouchableWithoutFeedback} from 'react-native'
 import {
   View,
   NavigationBar,
@@ -27,9 +27,11 @@ import {
   Title,
 } from '@shoutem/ui'
 import {connect} from 'react-redux'
+import {Overlay} from 'react-native-elements'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
-import {login} from '../actions/userActions'
+import Languages from '../config/Languages'
+import {login, changeLocale} from '../actions/userActions'
 import {setUnreadCount, addToCount} from '../actions/chatActions'
 import {getAdsByCatId, setAd, setCategory, searchAdvs} from '../actions/adsActions'
 import CategoryModal from '../components/CategoryModal'
@@ -50,6 +52,7 @@ class MainScreen extends React.Component {
     yAxis: 0,
     showButton: true,
     categoryModal: false,
+    overlayVisible: false,
   }
 
   componentWillMount() {
@@ -73,8 +76,9 @@ class MainScreen extends React.Component {
         this.props
           .searchAdvs(data)
           .then(() => this.props.navigation.navigate('AdListPage'))
-          .catch(() => alert('No result'))
+          .catch(() => alert(Languages[this.props.user.locale].Loggedin))
       },
+      changeLocale: () => this.setState({overlayVisible: true}),
     })
     const data = {
       id: 1,
@@ -126,7 +130,8 @@ class MainScreen extends React.Component {
               <Subtitle numberOfLines={3}>{ad.name}</Subtitle>
               <Title>
                 {`${ad.retail_price} `}
-                {this.getCurrency(ad.currency_id) || 'TMT'}/item
+                {this.getCurrency(ad.currency_id) || 'TMT'}
+                {Languages[this.props.user.locale].Item}
               </Title>
               <View styleName="horizontal">
                 <Caption styleName="collapsible" numberOfLines={2}>
@@ -161,6 +166,7 @@ class MainScreen extends React.Component {
   render() {
     const {ads} = this.props.ads
     const groupedData = GridRow.groupByRows(ads, 2, () => 1)
+    console.log(this.state)
     return (
       <View styleName="fill-parent">
         {this.state.loading ? (
@@ -170,6 +176,69 @@ class MainScreen extends React.Component {
             onLayout={event => {
               console.log(event.nativeEvent.layout)
             }}>
+            <Overlay
+              width="auto"
+              height="auto"
+              isVisible={this.state.overlayVisible}
+              onBackdropPress={() => this.setState({overlayVisible: false})}>
+              <TouchableWithoutFeedback onPress={() => this.setState({overlayVisible: false})}>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Text style={{fontSize: 16, alignSelf: 'center', marginBottom: 10}}>
+                    {Languages[this.props.user.locale].Language}
+                  </Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <Button
+                      onPress={() => {
+                        this.setState({overlayVisible: false})
+                        this.props.changeLocale('ru')
+                        this.props.navigation.setParams({
+                          language: 'ru',
+                        })
+                      }}
+                      style={{backgroundColor: 'transparent'}}>
+                      <View style={{width: 80, height: 60}}>
+                        <Image
+                          style={{width: 80, height: 60}}
+                          source={require('../assets/images/russia.png')}
+                        />
+                      </View>
+                    </Button>
+                    <Button
+                      onPress={() => {
+                        this.setState({overlayVisible: false})
+                        this.props.changeLocale('tm')
+                        this.props.navigation.setParams({
+                          language: 'tm',
+                        })
+                      }}
+                      style={{backgroundColor: 'transparent'}}>
+                      <View style={{width: 80, height: 60}}>
+                        <Image
+                          style={{width: 80, height: 60}}
+                          source={require('../assets/images/turkmenistan.png')}
+                        />
+                      </View>
+                    </Button>
+                    <Button
+                      onPress={() => {
+                        this.setState({overlayVisible: false})
+                        this.props.changeLocale('en')
+                        this.props.navigation.setParams({
+                          language: 'en',
+                        })
+                      }}
+                      style={{backgroundColor: 'transparent'}}>
+                      <View style={{width: 80, height: 60}}>
+                        <Image
+                          style={{width: 80, height: 60}}
+                          source={require('../assets/images/united-kingdom.png')}
+                        />
+                      </View>
+                    </Button>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </Overlay>
             <ListView
               onScroll={({nativeEvent}) => {
                 const y = this.state.yAxis
@@ -224,7 +293,9 @@ class MainScreen extends React.Component {
                 backgroundColor: '#f8f9fc',
               }}>
               <FontAwesome name="cubes" color="#4a97f1" size={28} />
-              <Title style={{marginLeft: 10}}>Search by category</Title>
+              <Title style={{marginLeft: 10}}>
+                {Languages[this.props.user.locale].Searchcategory}
+              </Title>
             </Button>
             <Button
               onPress={() => this.props.navigation.navigate('Filter')}
@@ -238,7 +309,7 @@ class MainScreen extends React.Component {
                 backgroundColor: '#f8f9fc',
               }}>
               <FontAwesome name="filter" color="#4a97f1" size={28} />
-              <Title style={{marginLeft: 10}}>Filter ads</Title>
+              <Title style={{marginLeft: 10}}>{Languages[this.props.user.locale].Filterads}</Title>
             </Button>
           </View>
         ) : null}
@@ -255,10 +326,12 @@ class MainScreen extends React.Component {
               onPress={() =>
                 this.props.user.user.id
                   ? this.props.navigation.navigate('AddAdv')
-                  : alert('You are not logged in')
+                  : alert(Languages[this.props.user.locale].Loggedin)
               }>
               <Icon name="plus-button" style={{color: 'white'}} />
-              <Text style={{color: 'white'}}>Add advertisement</Text>
+              <Text style={{color: 'white'}}>
+                {Languages[this.props.user.locale].Addadvertisement}
+              </Text>
             </Button>
           </View>
         ) : null}
@@ -274,5 +347,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd, setCategory, searchAdvs, login, setUnreadCount, addToCount}
+  {getAdsByCatId, setAd, setCategory, searchAdvs, login, setUnreadCount, addToCount, changeLocale}
 )(MainScreen)

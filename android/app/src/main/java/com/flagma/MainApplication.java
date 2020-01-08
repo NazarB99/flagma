@@ -1,4 +1,4 @@
-package com.flagma;
+package com.flagmacustom;
 
 import android.app.Application;
 import android.util.Log;

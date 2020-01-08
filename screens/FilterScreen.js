@@ -25,6 +25,7 @@ import {connect} from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
 import {NavigationActions} from 'react-navigation'
 
+import Languages from '../config/Languages'
 import Loading from '../components/Loading'
 import {uploadFile} from '../config/ApiCalls'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
@@ -141,7 +142,9 @@ class FilterScreen extends React.Component {
             <ScrollView style={{flex: 1}}>
               <View
                 style={{alignItems: 'center', backgroundColor: MAIN_COLOR, paddingHorizontal: 10}}>
-                <Heading style={{marginVertical: 10, color: 'white'}}>Filter</Heading>
+                <Heading style={{marginVertical: 10, color: 'white'}}>
+                  {Languages[this.props.user.locale].Filter}
+                </Heading>
                 <View
                   style={{
                     flexDirection: 'row',
@@ -182,6 +185,25 @@ class FilterScreen extends React.Component {
                   />
                 </View>
                 <View style={{marginBottom: 15}}>
+                  {/* <Text style={{color: 'white', marginBottom: 5}}>Select category</Text> */}
+                  <DropDownMenu
+                    style={{
+                      selectedOption: {
+                        height: 80,
+                      },
+                      modal: {
+                        marginBottom: 10,
+                      },
+                    }}
+                    styleName="horizontal"
+                    options={this.props.currencies}
+                    selectedOption={currency || this.props.currencies[0]}
+                    onOptionSelected={cur => this.setState({currencies: cur})}
+                    titleProperty="title"
+                    valueProperty="currencies.id"
+                  />
+                </View>
+                <View style={{marginBottom: 15}}>
                   {/* <Text style={{color: 'white', marginBottom: 5}}>Select type</Text> */}
                   <DropDownMenu
                     style={{
@@ -213,30 +235,32 @@ class FilterScreen extends React.Component {
                     valueProperty="units.id"
                   />
                 </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: Dimensions.get('window').width * 0.95,
-                    marginBottom: 15,
-                  }}>
-                  <Button
-                    style={{
-                      backgroundColor: ORANGE_COLOR,
-                      borderColor: 'white',
-                      borderWidth: 0.8,
-                      paddingVertical: 10,
-                      width: Dimensions.get('window').width * 0.9,
-                      borderRadius: 10,
-                    }}
-                    onPress={() => this.onSubmit()}>
-                    {/* <Icon name="plus-button" style={{color: 'white'}} /> */}
-                    <Title style={{color: 'white'}}>Submit</Title>
-                  </Button>
-                </View>
               </View>
             </ScrollView>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: Dimensions.get('window').width * 0.95,
+                marginBottom: 15,
+                position: 'absolute',
+                bottom: 30,
+              }}>
+              <Button
+                style={{
+                  backgroundColor: ORANGE_COLOR,
+                  borderColor: 'white',
+                  borderWidth: 0.8,
+                  paddingVertical: 10,
+                  width: Dimensions.get('window').width * 0.9,
+                  borderRadius: 10,
+                }}
+                onPress={() => this.onSubmit()}>
+                {/* <Icon name="plus-button" style={{color: 'white'}} /> */}
+                <Title style={{color: 'white'}}>{Languages[this.props.user.locale].Submit}</Title>
+              </Button>
+            </View>
           </KeyboardAvoidingView>
         )}
       </View>
@@ -252,6 +276,7 @@ const mapStateToProps = state => ({
   token: state.user.user.token,
   id: state.user.user.id,
   is_verified: state.user.user.is_verified,
+  user: state.user,
 })
 
 export default connect(

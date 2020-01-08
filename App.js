@@ -75,6 +75,8 @@ const MainStack = createStackNavigator(
           onBlur,
           onType,
           onSubmitEditing,
+          changeLocale,
+          language,
         } = navigation.router.getPathAndParamsForState(navigation.state).params
         return {
           headerStyle: {
@@ -142,11 +144,32 @@ const MainStack = createStackNavigator(
               />
             ) : null,
           headerRight:
-            navigation.router.getPathAndParamsForState(navigation.state).path === 'Login' ? null : (
-              <Button style={{height: 30, width: 30, marginRight: 10, padding: 0}}>
+            navigation.router.getPathAndParamsForState(navigation.state).path ===
+            'Login' ? null : language === 'ru' ? (
+              <Button
+                onPress={() => changeLocale()}
+                style={{height: 30, width: 30, marginRight: 10, padding: 0}}>
+                <Image
+                  style={{height: 30, width: 30}}
+                  source={require('./assets/images/russia.png')}
+                />
+              </Button>
+            ) : language === 'en' ? (
+              <Button
+                onPress={() => changeLocale()}
+                style={{height: 30, width: 30, marginRight: 10, padding: 0}}>
                 <Image
                   style={{height: 30, width: 30}}
                   source={require('./assets/images/united-kingdom.png')}
+                />
+              </Button>
+            ) : (
+              <Button
+                onPress={() => changeLocale()}
+                style={{height: 30, width: 30, marginRight: 10, padding: 0}}>
+                <Image
+                  style={{height: 30, width: 30}}
+                  source={require('./assets/images/turkmenistan.png')}
                 />
               </Button>
             ),

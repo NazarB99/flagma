@@ -9,6 +9,7 @@ import {View, Dimensions, ScrollView, StyleSheet} from 'react-native'
 import {TextInput, Text, Button, DropDownMenu, Heading, Title} from '@shoutem/ui'
 import {connect} from 'react-redux'
 
+import Languages from '../config/Languages'
 import {setAccountModification} from '../actions/adsActions'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
 
@@ -122,7 +123,9 @@ class AccountScreen extends Component {
     return (
       <ScrollView>
         <View style={{backgroundColor: MAIN_COLOR, alignItems: 'center', justifyContent: 'center'}}>
-          <Heading style={{color: 'white', marginBottom: 15}}>Account info</Heading>
+          <Heading style={{color: 'white', marginBottom: 15}}>
+            {Languages[this.props.user.locale].Accountinfo}
+          </Heading>
           <View style={{marginBottom: 15}}>
             {/* <Text style={{color: 'white', marginBottom: 5}}>Select category</Text> */}
             <DropDownMenu
@@ -144,62 +147,62 @@ class AccountScreen extends Component {
           </View>
           <TextInput
             style={styles.input}
-            placeholder="Company Name"
+            placeholder={Languages[this.props.user.locale].Companyname}
             value={company_name}
             onChangeText={text => this.setState({company_name: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Country"
+            placeholder={Languages[this.props.user.locale].Country}
             value={country}
             onChangeText={text => this.setState({country: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Region"
+            placeholder={Languages[this.props.user.locale].Region}
             value={region}
             onChangeText={text => this.setState({region: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="City"
+            placeholder={Languages[this.props.user.locale].City}
             value={city}
             onChangeText={text => this.setState({city: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Address"
+            placeholder={Languages[this.props.user.locale].Address}
             value={address}
             onChangeText={text => this.setState({address: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Phone"
+            placeholder={Languages[this.props.user.locale].Phone}
             value={phone}
             onChangeText={text => this.setState({phone: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Foundation year"
+            placeholder={Languages[this.props.user.locale].Foundationyear}
             value={foundation_year}
             onChangeText={text => this.setState({foundation_year: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Employee count"
+            placeholder={Languages[this.props.user.locale].Employeecount}
             value={employee_count}
             onChangeText={text => this.setState({employee_count: text})}
           />
           <TextInput
             style={styles.input}
-            placeholder="Website"
+            placeholder={Languages[this.props.user.locale].Website}
             value={website}
             onChangeText={text => this.setState({website: text})}
           />
           <TextInput
             style={styles.input}
             numberOfLines={15}
-            placeholder="Business Description"
+            placeholder={Languages[this.props.user.locale].BusinessDescription}
             value={business_description}
             onChangeText={text => this.setState({business_description: text})}
           />
@@ -215,7 +218,7 @@ class AccountScreen extends Component {
             }}
             onPress={() => this.onSubmit()}>
             {/* <Icon name="plus-button" style={{color: 'white'}} /> */}
-            <Title style={{color: 'white'}}>Submit</Title>
+            <Title style={{color: 'white'}}>{Languages[this.props.user.locale].Submit}</Title>
           </Button>
         </View>
       </ScrollView>

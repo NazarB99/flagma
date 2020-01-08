@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable react/static-property-placement */
-import {FETCH_USER, SET_LOADING, LOGOUT} from '../actions/type/types'
+import {FETCH_USER, SET_LOADING, LOGOUT, CHANGE_LANG} from '../actions/type/types'
 
 const initialState = {
   user: {},
@@ -21,6 +21,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: true,
+      }
+    case CHANGE_LANG:
+      return {
+        ...state,
+        locale: action.payload,
       }
     case LOGOUT:
       return {

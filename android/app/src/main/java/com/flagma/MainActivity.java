@@ -1,4 +1,4 @@
-package com.flagma;
+package com.flagmacustom;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

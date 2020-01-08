@@ -7,7 +7,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
-import {Dimensions} from 'react-native'
+import {Dimensions, Alert} from 'react-native'
 import {
   View,
   NavigationBar,
@@ -30,6 +30,7 @@ import {
 import {connect} from 'react-redux'
 import Hamburger from 'react-native-animated-hamburger'
 
+import Languages from '../config/Languages'
 import {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
 import Loading from '../components/Loading'
@@ -41,7 +42,7 @@ class AdListPageScreen extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({loading: true})
+    this.setState({loading: false})
   }
 
   componentDidMount() {
@@ -60,7 +61,7 @@ class AdListPageScreen extends React.Component {
         this.props
           .searchAdvs(data)
           .then(() => this.props.navigation.navigate('AdListPage'))
-          .catch(() => alert('No result'))
+          .catch(() => alert(Languages[this.props.user.locale].Noresult))
       },
     })
     const type = this.props.navigation.getParam('type')
@@ -86,6 +87,10 @@ class AdListPageScreen extends React.Component {
     }
     if (this.props.ads.filtered_ads.length > 0) {
       this.setState({loading: false})
+    } else {
+      // Alert.alert('No result', 'No result for your request', [
+      //   {text: 'OK', onPress: () => this.props.navigation.goBack()},
+      // ])
     }
   }
 
@@ -126,7 +131,8 @@ class AdListPageScreen extends React.Component {
               </Title>
               <Title style={{marginTop: 10}}>
                 {`${ad.retail_price} `}
-                {this.getCurrency(ad.currency_id) || 'TMT'}/item
+                {this.getCurrency(ad.currency_id) || 'TMT'}
+                {Languages[this.props.user.locale].Item}
               </Title>
               <View styleName="horizontal">
                 <Caption style={{color: '#525c69'}} styleName="collapsible" numberOfLines={2}>
@@ -151,22 +157,28 @@ class AdListPageScreen extends React.Component {
         {this.state.loading ? (
           <Loading />
         ) : (
-          <View>
-            <ListView
-              onScroll={({nativeEvent}) => {
-                const y = this.state.yAxis
-                this.setState({yAxis: nativeEvent.contentOffset.y}, () => {
-                  console.log(y)
-                  if (y < nativeEvent.contentOffset.y) {
-                    this.setState({showButton: false})
-                  } else {
-                    this.setState({showButton: true})
-                  }
-                })
-              }}
-              data={groupedData}
-              renderRow={this.renderRow}
-            />
+          <View styleName="fill-parent">
+            {this.props.ads.filtered_ads.length < 1 ? (
+              <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Title>{Languages[this.props.user.locale].Noresult}</Title>
+              </View>
+            ) : (
+              <ListView
+                onScroll={({nativeEvent}) => {
+                  const y = this.state.yAxis
+                  this.setState({yAxis: nativeEvent.contentOffset.y}, () => {
+                    console.log(y)
+                    if (y < nativeEvent.contentOffset.y) {
+                      this.setState({showButton: false})
+                    } else {
+                      this.setState({showButton: true})
+                    }
+                  })
+                }}
+                data={groupedData}
+                renderRow={this.renderRow}
+              />
+            )}
           </View>
         )}
         {this.state.showButton ? (
@@ -181,7 +193,9 @@ class AdListPageScreen extends React.Component {
               }}
               onPress={() => this.props.navigation.navigate('AddAdv')}>
               <Icon name="plus-button" style={{color: 'white'}} />
-              <Text style={{color: 'white'}}>Add advertisement</Text>
+              <Text style={{color: 'white'}}>
+                {Languages[this.props.user.locale].Addadvertisement}
+              </Text>
             </Button>
           </View>
         ) : null}

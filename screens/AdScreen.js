@@ -12,6 +12,7 @@ import {SliderBox} from 'react-native-image-slider-box'
 import moment from 'moment'
 import Carousel from 'react-native-snap-carousel'
 
+import Languages from '../config/Languages'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
 
 class AdScreen extends Component {
@@ -83,7 +84,7 @@ class AdScreen extends Component {
           {this.props.ad.wholesale_price_min}$/it - {this.props.ad.wholesale_price_max}$/it
         </Title>
         <Title styleName="bold" style={{marginTop: 30}}>
-          Description
+          {Languages[this.props.user.locale].Description}
         </Title>
         <Text style={{marginTop: 10}}>{this.props.ad.description}</Text>
         <View
@@ -119,7 +120,9 @@ class AdScreen extends Component {
                   id: this.props.ad.business_id,
                 })
               }>
-              <Text style={{color: '#0670ec'}}>All advetisements of this company:</Text>
+              <Text style={{color: '#0670ec'}}>
+                {Languages[this.props.user.locale].Alladvetisementsofthiscompany}
+              </Text>
             </Button>
             <Text
               styleName="secondary"
@@ -143,7 +146,7 @@ class AdScreen extends Component {
                 paddingBottom: 10,
                 width: Dimensions.get('window').width * 0.45,
               }}>
-              <Text style={{color: 'white'}}>Call</Text>
+              <Text style={{color: 'white'}}>{Languages[this.props.user.locale].Call}</Text>
             </Button>
             <Button
               onPress={() => {
@@ -158,7 +161,7 @@ class AdScreen extends Component {
                 paddingBottom: 10,
                 width: Dimensions.get('window').width * 0.45,
               }}>
-              <Text style={{color: 'white'}}>In-app Message</Text>
+              <Text style={{color: 'white'}}>{Languages[this.props.user.locale].Inapp}</Text>
             </Button>
           </View>
         </View>
@@ -169,6 +172,7 @@ class AdScreen extends Component {
 
 const mapStateToProps = state => ({
   ad: state.ads.selected_ad,
+  user: state.user,
 })
 
 export default connect(mapStateToProps)(AdScreen)

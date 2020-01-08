@@ -10,6 +10,7 @@ import {connect} from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
 import {NavigationActions} from 'react-navigation'
 
+import Languages from '../config/Languages'
 import {addAdv} from '../actions/adsActions'
 import {uploadFile} from '../config/ApiCalls'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
@@ -44,7 +45,7 @@ class AddAdvScreen extends Component {
   componentDidMount() {
     if (!this.props.id || !this.props.is_verified) {
       this.props.navigation.replace('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
-      alert('You are not logged in or not verified')
+      alert(Languages[this.props.user.locale].Neither)
     }
     this.setState({
       category: this.props.categories[0],
@@ -127,7 +128,7 @@ class AddAdvScreen extends Component {
         images: JSON.stringify(images),
       })
       .then(res => {
-        alert('Your ad will be posted after review')
+        alert(Languages[this.props.user.locale].Willbeposted)
         this.props.navigation.replace('Drawer')
       })
       .catch(err => alert(JSON.stringify(err)))
@@ -140,7 +141,9 @@ class AddAdvScreen extends Component {
       <KeyboardAvoidingView style={{flex: 1}}>
         <ScrollView style={{flex: 1}}>
           <View style={{alignItems: 'center', backgroundColor: MAIN_COLOR, paddingHorizontal: 10}}>
-            <Heading style={{marginVertical: 10, color: 'white'}}>Add advertisement</Heading>
+            <Heading style={{marginVertical: 10, color: 'white'}}>
+              {Languages[this.props.user.locale].Addadvetisement}
+            </Heading>
             <View
               style={{
                 alignItems: 'center',
@@ -149,7 +152,7 @@ class AddAdvScreen extends Component {
                 marginBottom: 15,
               }}>
               <Button style={{marginBottom: 5}} onPress={() => this.imagePicker()}>
-                <Title>Pick image</Title>
+                <Title>{Languages[this.props.user.locale].Pickimage}</Title>
               </Button>
               {this.state.images.length > 0 ? (
                 <View style={{flexDirection: 'row'}}>
@@ -165,7 +168,7 @@ class AddAdvScreen extends Component {
                 marginBottom: 15,
                 borderRadius: 5,
               }}
-              placeholder="Name"
+              placeholder={Languages[this.props.user.locale].Name}
               value={this.state.name}
               onChangeText={text => this.setState({name: text})}
             />
@@ -209,7 +212,7 @@ class AddAdvScreen extends Component {
                 style={{flex: 2, marginRight: 5, height: 55, borderRadius: 5}}
                 onChangeText={text => this.setState({retail_price: text})}
                 value={this.state.retail_price}
-                placeholder="Retail Price"
+                placeholder={Languages[this.props.user.locale].Retailprice}
               />
               <View style={{flex: 1}}>
                 <Picker
@@ -246,13 +249,13 @@ class AddAdvScreen extends Component {
                 marginBottom: 15,
               }}>
               <TextInput
-                placeholder="Min whole."
+                placeholder={Languages[this.props.user.locale].Minwhole}
                 value={this.state.wholesale_price_min}
                 onChangeText={text => this.setState({wholesale_price_min: text})}
                 style={{marginRight: 10, width: Dimensions.get('window').width * 0.45}}
               />
               <TextInput
-                placeholder="Max whole."
+                placeholder={Languages[this.props.user.locale].Maxwhole}
                 value={this.state.wholesale_price_max}
                 onChangeText={text => this.setState({wholesale_price_max: text})}
                 style={{width: Dimensions.get('window').width * 0.45}}
@@ -267,7 +270,7 @@ class AddAdvScreen extends Component {
                 marginBottom: 15,
               }}>
               <TextInput
-                placeholder="Description"
+                placeholder={Languages[this.props.user.locale].Description}
                 numberOfLines={15}
                 multiline
                 value={this.state.description}
@@ -299,7 +302,7 @@ class AddAdvScreen extends Component {
                 }}
                 onPress={() => this.onSubmit()}>
                 {/* <Icon name="plus-button" style={{color: 'white'}} /> */}
-                <Title style={{color: 'white'}}>Submit</Title>
+                <Title style={{color: 'white'}}>{Languages[this.props.user.locale].Submit}</Title>
               </Button>
             </View>
           </View>
@@ -316,6 +319,7 @@ const mapStateToProps = state => ({
   token: state.user.user.token,
   id: state.user.user.id,
   is_verified: state.user.user.is_verified,
+  user: state.user,
 })
 
 export default connect(

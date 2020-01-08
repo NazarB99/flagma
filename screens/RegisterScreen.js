@@ -11,6 +11,7 @@ import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
 import {connect} from 'react-redux'
 import {NavigationActions} from 'react-navigation'
 
+import Languages from '../config/Languages'
 import Loading from '../components/Loading'
 import {registration, startVerification} from '../actions/userActions'
 
@@ -92,7 +93,7 @@ class RegisterScreen extends React.Component {
       .registration(data)
       .then(() => {
         this.setState({loading: false})
-        alert('Now you can login')
+        alert(Languages[this.props.user.locale].Youcanlogin)
         this.props.navigation.replace(
           'Drawer',
           {},
@@ -112,7 +113,7 @@ class RegisterScreen extends React.Component {
         .startVerification(this.state.email)
         .then(() => this.setState({code: true, loading: false}))
     } else {
-      alert('E-mail is too short')
+      alert(Languages[this.props.user.locale].Emailshort)
     }
   }
 
@@ -122,10 +123,10 @@ class RegisterScreen extends React.Component {
     ) : (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
         <Title styleName="bold" style={{color: '#fff'}}>
-          Registration
+          {Languages[this.props.user.locale].Registration}
         </Title>
         <Subtitle styleName="bold" style={{color: '#fff', marginBottom: 10}}>
-          Create new account.
+          {Languages[this.props.user.locale].Newaccount}
         </Subtitle>
         {!this.state.code ? (
           <View>
@@ -134,13 +135,13 @@ class RegisterScreen extends React.Component {
               value={this.state.email}
               onChangeText={text => this.onChangeText('email', text)}
               style={styles.input}
-              placeholder="E-mail"
+              placeholder={Languages[this.props.user.locale].Email}
             />
             <TextInput
               value={this.state.password}
               style={styles.input}
               onChangeText={text => this.onChangeText('password', text)}
-              placeholder="Password"
+              placeholder={Languages[this.props.user.locale].Password}
               secureTextEntry
             />
           </View>
@@ -151,7 +152,7 @@ class RegisterScreen extends React.Component {
             onChangeText={text => {
               this.onChangeText('passCode', text)
             }}
-            placeholder="Code"
+            placeholder={Languages[this.props.user.locale].Code}
             secureTextEntry
           />
         )}
@@ -166,13 +167,15 @@ class RegisterScreen extends React.Component {
                 marginBottom: 10,
               }}
               onPress={() => this.startVer()}>
-              <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
+              <Text style={{marginTop: 10, color: '#fff'}}>
+                {Languages[this.props.user.locale].Submit}
+              </Text>
             </Button>
             <Button
               style={{backgroundColor: 'transparent'}}
               onPress={() => this.props.navigation.navigate('Login')}>
               <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
-                Or you can login here
+                {Languages[this.props.user.locale].Youcanlogin}
               </Text>
             </Button>
           </View>

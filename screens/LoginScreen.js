@@ -8,10 +8,12 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
 import {StyleSheet} from 'react-native'
-import {Title, Subtitle, TextInput, View, Text, Button} from '@shoutem/ui'
+import {Title, Subtitle, TextInput, View, Text, Button, Icon} from '@shoutem/ui'
 import {connect} from 'react-redux'
 import {NavigationActions} from 'react-navigation'
+import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
+import Languages from '../config/Languages'
 import Loading from '../components/Loading'
 import {login, logout} from '../actions/userActions'
 import {getCategories, getCurrencies, getUnits} from '../actions/adsActions'
@@ -44,6 +46,7 @@ class LoginScreen extends React.Component {
     email: '',
     password: '',
     loading: false,
+    secureEntry: true,
   }
 
   componentDidMount() {
@@ -106,10 +109,10 @@ class LoginScreen extends React.Component {
     ) : (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
         <Title styleName="bold" style={{color: '#fff'}}>
-          Login
+          {Languages[this.props.user.locale].Login}
         </Title>
         <Subtitle styleName="bold" style={{color: '#fff', marginBottom: 10}}>
-          Welcome back!
+          {Languages[this.props.user.locale].Welcomeback}
         </Subtitle>
         <TextInput
           autoCapitalize="none"
@@ -117,15 +120,22 @@ class LoginScreen extends React.Component {
           value={this.state.email}
           onChangeText={text => this.onChangeText('email', text)}
           style={styles.input}
-          placeholder="E-mail"
+          placeholder={Languages[this.props.user.locale].Email}
         />
-        <TextInput
-          value={this.state.password}
-          style={styles.input}
-          onChangeText={text => this.onChangeText('password', text)}
-          placeholder="Password"
-          secureTextEntry
-        />
+        <View>
+          <TextInput
+            value={this.state.password}
+            style={styles.input}
+            onChangeText={text => this.onChangeText('password', text)}
+            placeholder={Languages[this.props.user.locale].Password}
+            secureTextEntry={this.state.secureEntry}
+          />
+          <View style={{position: 'absolute', right: 2, top: 10}}>
+            <Button onPress={() => this.setState({secureEntry: !this.state.secureEntry})}>
+              <FontAwesome name="eye" size={32} />
+            </Button>
+          </View>
+        </View>
         <Button
           style={{
             backgroundColor: '#ff6633',
@@ -135,13 +145,15 @@ class LoginScreen extends React.Component {
             marginBottom: 10,
           }}
           onPress={() => this.logIn()}>
-          <Text style={{marginTop: 10, color: '#fff'}}>Submit</Text>
+          <Text style={{marginTop: 10, color: '#fff'}}>
+            {Languages[this.props.user.locale].Submit}
+          </Text>
         </Button>
         <Button
           style={{backgroundColor: 'transparent'}}
           onPress={() => this.props.navigation.navigate('Register')}>
           <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
-            Or you can register here
+            {Languages[this.props.user.locale].Registerhere}
           </Text>
         </Button>
         <View
@@ -155,7 +167,7 @@ class LoginScreen extends React.Component {
             style={{backgroundColor: 'transparent'}}
             onPress={() => this.props.navigation.navigate('Main')}>
             <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
-              Proceed without login
+              {Languages[this.props.user.locale].Withoutlogin}
             </Text>
           </Button>
         </View>

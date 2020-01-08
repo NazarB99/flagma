@@ -24,6 +24,7 @@ import {
 import {connect} from 'react-redux'
 import Hamburger from 'react-native-animated-hamburger'
 
+import Languages from '../config/Languages'
 import {getAdsByBusiness, setAd} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
 import Loading from '../components/Loading'
@@ -92,7 +93,8 @@ class AdListPageScreen extends React.Component {
               </Title>
               <Title style={{marginTop: 10}}>
                 {`${ad.retail_price} `}
-                {this.getCurrency(ad.currency_id) || 'TMT'}/item
+                {this.getCurrency(ad.currency_id) || 'TMT'}
+                {Languages[this.props.user.locale].Item}
               </Title>
               <View styleName="horizontal">
                 <Caption style={{color: '#525c69'}} styleName="collapsible" numberOfLines={2}>
@@ -147,7 +149,9 @@ class AdListPageScreen extends React.Component {
               }}
               onPress={() => this.props.navigation.navigate('AddAdv')}>
               <Icon name="plus-button" style={{color: 'white'}} />
-              <Text style={{color: 'white'}}>Add advertisement</Text>
+              <Text style={{color: 'white'}}>
+                {Languages[this.props.user.locale].Addadvertisement}
+              </Text>
             </Button>
           </View>
         ) : null}
