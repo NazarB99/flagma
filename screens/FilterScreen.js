@@ -20,10 +20,12 @@ import {
   Card,
   Subtitle,
   Caption,
+  Text,
 } from '@shoutem/ui'
 import {connect} from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
 import {NavigationActions} from 'react-navigation'
+import ModalFilterPicker from 'react-native-modal-filter-picker'
 
 import Languages from '../config/Languages'
 import Loading from '../components/Loading'
@@ -55,14 +57,50 @@ class FilterScreen extends React.Component {
     unit: {},
     currency: {},
     country: 'TM',
+    categoryVisible: false,
+    categories: [],
+    unitVisible: false,
+    units: [],
+    currencyVisible: false,
+    currencies: [],
+    typeVisible: false,
+    types: [],
   }
 
   componentDidMount() {
+    const catArr = []
+    const currArr = []
+    const typeArr = []
+    const unitArr = []
+    this.props.categories.map(item => {
+      catArr.push({
+        key: item,
+        label: item[`title_${this.props.user.locale}`],
+      })
+    })
+    this.props.currencies.map(item => {
+      currArr.push({
+        key: item,
+        label: item.title,
+      })
+    })
+    this.props.units.map(item => {
+      unitArr.push({
+        key: item,
+        label: item.title,
+      })
+    })
+    types.map(item => {
+      typeArr.push({
+        key: item,
+        label: item.title,
+      })
+    })
     this.setState({
-      category: this.props.categories[0],
-      currency: this.props.currencies[0],
-      unit: this.props.units[0],
-      type: types[0],
+      categories: catArr,
+      currencies: currArr,
+      types: typeArr,
+      units: unitArr,
     })
   }
 
@@ -130,6 +168,23 @@ class FilterScreen extends React.Component {
     )
   }
 
+  onShow = type => {
+    this.setState({[`${type}`]: true})
+  }
+
+  onSelect = (picked, type) => {
+    this.setState({
+      [`${type}`]: picked,
+      [`${type}Visible`]: false,
+    })
+  }
+
+  onCancel = type => {
+    this.setState({
+      [`${type}`]: false,
+    })
+  }
+
   render() {
     const {category, type, unit, currency} = this.state
     console.log(this.state)
@@ -166,74 +221,66 @@ class FilterScreen extends React.Component {
                   />
                 </View>
                 <View style={{marginBottom: 15}}>
-                  {/* <Text style={{color: 'white', marginBottom: 5}}>Select category</Text> */}
-                  <DropDownMenu
-                    style={{
-                      selectedOption: {
-                        height: 80,
-                      },
-                      modal: {
-                        marginBottom: 10,
-                      },
-                    }}
-                    styleName="horizontal"
-                    options={this.props.categories}
-                    selectedOption={category || this.props.categories[0]}
-                    onOptionSelected={cat => this.setState({category: cat})}
-                    titleProperty="title_tm"
-                    valueProperty="categories.id"
+                  <ModalFilterPicker
+                    visible={this.state.categoryVisible}
+                    onSelect={picked => this.onSelect(picked, 'category')}
+                    onCancel={() => this.onCancel('categoryVisible')}
+                    options={this.state.categories}
                   />
+                  <Button
+                    style={{width: Dimensions.get('window').width * 0.95}}
+                    onPress={() => this.onShow('categoryVisible')}>
+                    <Text style={{fontSize: 18}}>
+                      {this.state.category.id
+                        ? this.state.category[`title_${this.props.user.locale}`]
+                        : 'Select category'}
+                    </Text>
+                  </Button>
                 </View>
                 <View style={{marginBottom: 15}}>
-                  {/* <Text style={{color: 'white', marginBottom: 5}}>Select category</Text> */}
-                  <DropDownMenu
-                    style={{
-                      selectedOption: {
-                        height: 80,
-                      },
-                      modal: {
-                        marginBottom: 10,
-                      },
-                    }}
-                    styleName="horizontal"
-                    options={this.props.currencies}
-                    selectedOption={currency || this.props.currencies[0]}
-                    onOptionSelected={cur => this.setState({currencies: cur})}
-                    titleProperty="title"
-                    valueProperty="currencies.id"
+                  <ModalFilterPicker
+                    visible={this.state.currencyVisible}
+                    onSelect={picked => this.onSelect(picked, 'currency')}
+                    onCancel={() => this.onCancel('currencyVisible')}
+                    options={this.state.currencies}
                   />
+                  <Button
+                    style={{width: Dimensions.get('window').width * 0.95}}
+                    onPress={() => this.onShow('currencyVisible')}>
+                    <Text style={{fontSize: 18}}>
+                      {this.state.currency.id ? this.state.currency.title : 'Select currency'}
+                    </Text>
+                  </Button>
                 </View>
                 <View style={{marginBottom: 15}}>
-                  {/* <Text style={{color: 'white', marginBottom: 5}}>Select type</Text> */}
-                  <DropDownMenu
-                    style={{
-                      selectedOption: {
-                        height: 80,
-                      },
-                    }}
-                    styleName="horizontal"
-                    options={types}
-                    selectedOption={type || types[0]}
-                    onOptionSelected={type => this.setState({type})}
-                    titleProperty="title"
-                    valueProperty="types.name"
+                  <ModalFilterPicker
+                    visible={this.state.typeVisible}
+                    onSelect={picked => this.onSelect(picked, 'type')}
+                    onCancel={() => this.onCancel('typeVisible')}
+                    options={this.state.types}
                   />
+                  <Button
+                    style={{width: Dimensions.get('window').width * 0.95}}
+                    onPress={() => this.onShow('typeVisible')}>
+                    <Text style={{fontSize: 18}}>
+                      {this.state.type.name ? this.state.type.title : 'Select type'}
+                    </Text>
+                  </Button>
                 </View>
                 <View style={{marginBottom: 15}}>
-                  {/* <Text style={{color: 'white', marginBottom: 5}}>Select type</Text> */}
-                  <DropDownMenu
-                    style={{
-                      selectedOption: {
-                        height: 80,
-                      },
-                    }}
-                    styleName="horizontal"
-                    options={this.props.units}
-                    selectedOption={unit || this.props.units[0]}
-                    onOptionSelected={un => this.setState({unit: un})}
-                    titleProperty="title"
-                    valueProperty="units.id"
+                  <ModalFilterPicker
+                    visible={this.state.unitVisible}
+                    onSelect={picked => this.onSelect(picked, 'unit')}
+                    onCancel={() => this.onCancel('unitVisible')}
+                    options={this.state.units}
                   />
+                  <Button
+                    style={{width: Dimensions.get('window').width * 0.95}}
+                    onPress={() => this.onShow('unitVisible')}>
+                    <Text style={{fontSize: 18}}>
+                      {this.state.unit.id ? this.state.unit.title : 'Select unit'}
+                    </Text>
+                  </Button>
                 </View>
               </View>
             </ScrollView>

@@ -151,9 +151,13 @@ class AdScreen extends Component {
             <Button
               onPress={() => {
                 // this.props.setOpponentId(this.props)
-                this.props.navigation.navigate('Chat', {
-                  receiver_id: this.props.ad.business_id,
-                })
+                if (this.props.user.user.id) {
+                  this.props.navigation.navigate('Chat', {
+                    receiver_id: this.props.ad.business_id,
+                  })
+                } else {
+                  alert('Login to chat')
+                }
               }}
               style={{
                 backgroundColor: ORANGE_COLOR,

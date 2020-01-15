@@ -45,6 +45,7 @@ import {
   messageAddOneCount,
   getUnreadCount,
 } from '../config/Socket'
+import LanguageOverlay from '../components/LanguagesOverlay'
 
 class MainScreen extends React.Component {
   state = {
@@ -163,10 +164,18 @@ class MainScreen extends React.Component {
     })
   }
 
+  closeLanguageOverlay = () => {
+    this.setState({overlayVisible: false})
+  }
+
+  openLanguageOverlay = () => {
+    this.setState({overlayVisible: true})
+  }
+
   render() {
     const {ads} = this.props.ads
     const groupedData = GridRow.groupByRows(ads, 2, () => 1)
-    console.log(this.state)
+    console.log(this.props.user)
     return (
       <View styleName="fill-parent">
         {this.state.loading ? (
@@ -176,69 +185,14 @@ class MainScreen extends React.Component {
             onLayout={event => {
               console.log(event.nativeEvent.layout)
             }}>
-            <Overlay
-              width="auto"
-              height="auto"
-              isVisible={this.state.overlayVisible}
-              onBackdropPress={() => this.setState({overlayVisible: false})}>
-              <TouchableWithoutFeedback onPress={() => this.setState({overlayVisible: false})}>
-                <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <Text style={{fontSize: 16, alignSelf: 'center', marginBottom: 10}}>
-                    {Languages[this.props.user.locale].Language}
-                  </Text>
-                  <View style={{flexDirection: 'row'}}>
-                    <Button
-                      onPress={() => {
-                        this.setState({overlayVisible: false})
-                        this.props.changeLocale('ru')
-                        this.props.navigation.setParams({
-                          language: 'ru',
-                        })
-                      }}
-                      style={{backgroundColor: 'transparent'}}>
-                      <View style={{width: 80, height: 60}}>
-                        <Image
-                          style={{width: 80, height: 60}}
-                          source={require('../assets/images/russia.png')}
-                        />
-                      </View>
-                    </Button>
-                    <Button
-                      onPress={() => {
-                        this.setState({overlayVisible: false})
-                        this.props.changeLocale('tm')
-                        this.props.navigation.setParams({
-                          language: 'tm',
-                        })
-                      }}
-                      style={{backgroundColor: 'transparent'}}>
-                      <View style={{width: 80, height: 60}}>
-                        <Image
-                          style={{width: 80, height: 60}}
-                          source={require('../assets/images/turkmenistan.png')}
-                        />
-                      </View>
-                    </Button>
-                    <Button
-                      onPress={() => {
-                        this.setState({overlayVisible: false})
-                        this.props.changeLocale('en')
-                        this.props.navigation.setParams({
-                          language: 'en',
-                        })
-                      }}
-                      style={{backgroundColor: 'transparent'}}>
-                      <View style={{width: 80, height: 60}}>
-                        <Image
-                          style={{width: 80, height: 60}}
-                          source={require('../assets/images/united-kingdom.png')}
-                        />
-                      </View>
-                    </Button>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </Overlay>
+            <LanguageOverlay
+              navigation={this.props.navigation}
+              locale={this.props.user.locale || 'ru'}
+              changeLocale={this.props.changeLocale}
+              closeLanguageOverlay={this.closeLanguageOverlay}
+              openLanguageOverlay={this.openLanguageOverlay}
+              overlayVisible={this.state.overlayVisible}
+            />
             <ListView
               onScroll={({nativeEvent}) => {
                 const y = this.state.yAxis

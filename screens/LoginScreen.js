@@ -7,7 +7,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
-import {StyleSheet} from 'react-native'
+import {StyleSheet, Keyboard} from 'react-native'
 import {Title, Subtitle, TextInput, View, Text, Button, Icon} from '@shoutem/ui'
 import {connect} from 'react-redux'
 import {NavigationActions} from 'react-navigation'
@@ -47,6 +47,12 @@ class LoginScreen extends React.Component {
     password: '',
     loading: false,
     secureEntry: true,
+    hideBottomButton: false,
+  }
+
+  componentWillMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
   }
 
   componentDidMount() {
@@ -57,7 +63,7 @@ class LoginScreen extends React.Component {
       loggedIn: this.props.user.user.id,
     })
     if (this.props.user.user.id) {
-      this.props.navigation.navigate('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
+      this.props.navigation.replace('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
     }
   }
 
@@ -68,8 +74,21 @@ class LoginScreen extends React.Component {
       })
     }
     if (this.props.user.user.id) {
-      this.props.navigation.navigate('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
+      this.props.navigation.replace('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
     }
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+
+  _keyboardDidShow = () => {
+    this.setState({hideBottomButton: true})
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({hideBottomButton: false})
   }
 
   togglePanel = () => {
@@ -163,13 +182,15 @@ class LoginScreen extends React.Component {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Button
-            style={{backgroundColor: 'transparent'}}
-            onPress={() => this.props.navigation.navigate('Main')}>
-            <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
-              {Languages[this.props.user.locale].Withoutlogin}
-            </Text>
-          </Button>
+          {!this.state.hideBottomButton ? (
+            <Button
+              style={{backgroundColor: 'transparent'}}
+              onPress={() => this.props.navigation.navigate('Main')}>
+              <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
+                {Languages[this.props.user.locale].Withoutlogin}
+              </Text>
+            </Button>
+          ) : null}
         </View>
       </View>
     )

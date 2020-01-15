@@ -13,7 +13,8 @@ import {NavigationActions} from 'react-navigation'
 
 import Languages from '../config/Languages'
 import Loading from '../components/Loading'
-import {registration, startVerification} from '../actions/userActions'
+import {registration, startVerification, changeLocale} from '../actions/userActions'
+import LanguageOverlay from '../components/LanguagesOverlay'
 
 const styles = StyleSheet.create({
   drawer: {
@@ -45,12 +46,14 @@ class RegisterScreen extends React.Component {
     code: false,
     passCode: '',
     loading: false,
+    overlayVisible: false,
   }
 
   componentDidMount() {
     this.props.navigation.setParams({
       togglePanel: () => this.togglePanel(),
       active: this.state.active,
+      changeLocale: () => this.setState({overlayVisible: true}),
     })
   }
 
@@ -117,11 +120,27 @@ class RegisterScreen extends React.Component {
     }
   }
 
+  closeLanguageOverlay = () => {
+    this.setState({overlayVisible: false})
+  }
+
+  openLanguageOverlay = () => {
+    this.setState({overlayVisible: true})
+  }
+
   render() {
     return this.state.loading ? (
       <Loading />
     ) : (
       <View style={{flex: 1, backgroundColor: '#2b3d61'}} styleName="vertical h-center v-center">
+        <LanguageOverlay
+          navigation={this.props.navigation}
+          locale={this.props.user.locale || 'ru'}
+          changeLocale={this.props.changeLocale}
+          closeLanguageOverlay={this.closeLanguageOverlay}
+          openLanguageOverlay={this.openLanguageOverlay}
+          overlayVisible={this.state.overlayVisible}
+        />
         <Title styleName="bold" style={{color: '#fff'}}>
           {Languages[this.props.user.locale].Registration}
         </Title>
@@ -175,7 +194,7 @@ class RegisterScreen extends React.Component {
               style={{backgroundColor: 'transparent'}}
               onPress={() => this.props.navigation.navigate('Login')}>
               <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
-                {Languages[this.props.user.locale].Youcanlogin}
+                {Languages[this.props.user.locale].loginhere}
               </Text>
             </Button>
           </View>
@@ -194,5 +213,6 @@ export default connect(
   {
     registration,
     startVerification,
+    changeLocale,
   }
 )(RegisterScreen)

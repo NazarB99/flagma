@@ -7,7 +7,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react'
-import {Dimensions, Alert} from 'react-native'
+import {Dimensions, Alert, BackHandler} from 'react-native'
 import {
   View,
   NavigationBar,
@@ -28,7 +28,7 @@ import {
   Title,
 } from '@shoutem/ui'
 import {connect} from 'react-redux'
-import Hamburger from 'react-native-animated-hamburger'
+import {NavigationActions} from 'react-navigation'
 
 import Languages from '../config/Languages'
 import {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs} from '../actions/adsActions'
@@ -46,6 +46,7 @@ class AdListPageScreen extends React.Component {
   }
 
   componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackPress)
     this.props.navigation.setParams({
       searchInputIsFocused: false,
       onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),
@@ -92,6 +93,14 @@ class AdListPageScreen extends React.Component {
       //   {text: 'OK', onPress: () => this.props.navigation.goBack()},
       // ])
     }
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackPress)
+  }
+
+  onBackPress = () => {
+    this.props.navigation.navigate('Drawer', {}, NavigationActions.navigate({routeName: 'Main'}))
   }
 
   getCurrency = id => this.props.ads.currencies.filter(item => item.id === id)[0].title
