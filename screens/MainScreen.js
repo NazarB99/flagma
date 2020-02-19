@@ -61,7 +61,6 @@ class MainScreen extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.login('demortv22@gmail.com', 'demor')
     this.props.navigation.setParams({
       searchInputIsFocused: false,
       onFocus: () => this.props.navigation.setParams({searchInputIsFocused: true}),

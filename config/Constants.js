@@ -2,7 +2,7 @@ import {Dimensions} from 'react-native'
 
 export const MAIN_COLOR = '#2b3d61'
 export const ORANGE_COLOR = '#ff6633'
-export const BASE_URL = 'http://85.143.219.242:3000/api'
+export const BASE_URL = 'http://185.237.96.118:3000/api'
 export const customTextProps = {
   style: {
     fontFamily: 'Roboto',

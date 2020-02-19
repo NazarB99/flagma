@@ -81,6 +81,7 @@ const MainStack = createStackNavigator(
           changeLocale,
           language,
         } = navigation.router.getPathAndParamsForState(navigation.state).params
+        console.log(navigation.router.getPathAndParamsForState(navigation.state).params)
         return {
           headerStyle: {
             backgroundColor: MAIN_COLOR,

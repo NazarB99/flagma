@@ -1,3 +1,4 @@
+/* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable camelcase */
 /* eslint-disable import/named */
 /* eslint-disable react/prop-types */
@@ -63,6 +64,8 @@ class AddAdvScreen extends Component {
     uploadingFile: false,
     fileprogress: 0,
     country: 'turkmenistan',
+    picker_select: [],
+    picker_subcategory_select: [],
   }
 
   componentDidMount() {
@@ -71,16 +74,48 @@ class AddAdvScreen extends Component {
       alert(Languages[this.props.user.locale].Neither)
     }
     this.setState({
-      category: this.props.categories[0],
+      // category: this.props.categories[0],
       currency: this.props.currencies[0],
       unit: this.props.units[0],
       type: types[0],
     })
+    const list_categories = []
+    this.props.categories.map(item => {
+      if (item.parent_id === 1) {
+        list_categories.push({
+          label: item[`title_${this.props.user.locale}`],
+          value: item.id,
+        })
+      }
+    })
+
+    this.setState({picker_select: list_categories})
 
     this.props.navigation.setParams({
       searchInputIsFocused: false,
       changeLocale: () => this.props.overlayVisible(),
     })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log(this.state.category, this.state.category.id)
+    if (
+      this.state.category &&
+      this.state.category.id &&
+      this.state.category.id !== prevState.category.id
+    ) {
+      const list_subcategories = []
+      this.props.categories.map(item => {
+        console.log(item.parent_id, this.state.category.id)
+        if (item.parent_id === this.state.category.id) {
+          list_subcategories.push({
+            label: item[`title_${this.props.user.locale}`],
+            value: item.id,
+          })
+        }
+      })
+      this.setState({picker_subcategory_select: list_subcategories})
+    }
   }
 
   imagePicker = () => {
@@ -244,7 +279,15 @@ class AddAdvScreen extends Component {
             <View style={styles.dropdownView}>
               <Text style={{color: 'white', marginBottom: 5, flex: 1}}>Select category</Text>
               <View style={{flex: 2}}>
-                <DropDownMenu
+                <RNPickerSelect
+                  onValueChange={value => {
+                    const cat = this.props.categories.filter(item => item.id === value)[0]
+                    console.log(cat)
+                    this.setState({category: cat})
+                  }}
+                  items={this.state.picker_select}
+                />
+                {/* <DropDownMenu
                   style={{
                     selectedOption: {
                       height: 80,
@@ -259,30 +302,20 @@ class AddAdvScreen extends Component {
                   onOptionSelected={cat => this.setState({category: cat})}
                   titleProperty="title_tm"
                   valueProperty="categories.id"
-                />
+                /> */}
               </View>
             </View>
-            <View style={styles.dropdownView}>
-              <Text style={{color: 'white', marginBottom: 5, flex: 1}}>Select category</Text>
-              <View style={{flex: 2, width: 100}}>
-                <DropDownMenu
-                  style={{
-                    selectedOption: {
-                      height: 80,
-                    },
-                    modal: {
-                      marginBottom: 10,
-                    },
-                  }}
-                  styleName="horizontal"
-                  options={this.props.categories}
-                  selectedOption={category || this.props.categories[0]}
-                  onOptionSelected={cat => this.setState({category: cat})}
-                  titleProperty="title_tm"
-                  valueProperty="categories.id"
-                />
+            {this.state.category.id ? (
+              <View style={styles.dropdownView}>
+                <Text style={{color: 'white', marginBottom: 5, flex: 1}}>Select subcategory</Text>
+                <View style={{flex: 2, width: 100}}>
+                  <RNPickerSelect
+                    onValueChange={value => console.log(value)}
+                    items={this.state.picker_subcategory_select}
+                  />
+                </View>
               </View>
-            </View>
+            ) : null}
             <View style={styles.dropdownView}>
               {/* <Text style={{color: 'white', marginBottom: 5}}>Select type</Text> */}
               <DropDownMenu
