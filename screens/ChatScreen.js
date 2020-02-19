@@ -33,6 +33,7 @@ import {AutoGrowingTextInput} from 'react-native-autogrow-textinput'
 import {Button, Overlay} from 'react-native-elements'
 import DocumentPicker from 'react-native-document-picker'
 
+import {overlayVisible} from '../actions/userActions'
 import Languages from '../config/Languages'
 import {sendMessage, messageListener, messageRead, clearSubscriptions} from '../config/Socket'
 import {
@@ -109,6 +110,7 @@ export class ChatScreen extends Component {
 
     this.props.navigation.setParams({
       ChatWithDoctor: Languages[this.props.user.locale].ChatWithDoctor,
+      changeLocale: () => this.props.overlayVisible(),
     })
   }
 
@@ -310,6 +312,7 @@ const mapDispatchToProps = dispatch => ({
   setMessagesRead: (token, data) => dispatch(setMessagesRead(token, data)),
   messagesRead: data => dispatch(messagesRead(data)),
   clearUnreadCounter: () => dispatch(clearUnreadCounter()),
+  overlayVisible: () => dispatch(overlayVisible()),
 })
 
 export default connect(

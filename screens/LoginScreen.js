@@ -184,7 +184,7 @@ class LoginScreen extends React.Component {
           }}>
           {!this.state.hideBottomButton ? (
             <Button
-              style={{backgroundColor: 'transparent'}}
+              style={{backgroundColor: 'transparent', marginBottom: 10}}
               onPress={() => this.props.navigation.navigate('Main')}>
               <Text style={{marginTop: 10, color: '#fff', textDecorationLine: 'underline'}}>
                 {Languages[this.props.user.locale].Withoutlogin}

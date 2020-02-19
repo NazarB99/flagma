@@ -4,16 +4,29 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-unused-state */
 import React, {Component} from 'react'
-import {Dimensions, Picker, ScrollView, KeyboardAvoidingView} from 'react-native'
+import {
+  Dimensions,
+  Picker,
+  ScrollView,
+  KeyboardAvoidingView,
+  Modal,
+  Text,
+  StyleSheet,
+} from 'react-native'
 import {View, Heading, TextInput, DropDownMenu, Title, Button, Image} from '@shoutem/ui'
 import {connect} from 'react-redux'
 import ImagePicker from 'react-native-image-picker'
 import {NavigationActions} from 'react-navigation'
+import * as Progress from 'react-native-progress'
+import RNPickerSelect from 'react-native-picker-select'
 
 import Languages from '../config/Languages'
 import {addAdv} from '../actions/adsActions'
+import {overlayVisible} from '../actions/userActions'
 import {uploadFile} from '../config/ApiCalls'
-import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
+import {MAIN_COLOR, ORANGE_COLOR, BASE_URL} from '../config/Constants'
+
+const axios = require('axios')
 
 const types = [
   {
@@ -25,6 +38,13 @@ const types = [
     title: 'Service',
   },
 ]
+
+const styles = StyleSheet.create({
+  dropdownView: {
+    marginBottom: 15,
+    flexDirection: 'row',
+  },
+})
 
 class AddAdvScreen extends Component {
   state = {
@@ -39,6 +59,9 @@ class AddAdvScreen extends Component {
     retail_price: '',
     wholesale_price_min: '',
     wholesale_price_max: '',
+    overlayVisible: false,
+    uploadingFile: false,
+    fileprogress: 0,
     country: 'turkmenistan',
   }
 
@@ -52,6 +75,11 @@ class AddAdvScreen extends Component {
       currency: this.props.currencies[0],
       unit: this.props.units[0],
       type: types[0],
+    })
+
+    this.props.navigation.setParams({
+      searchInputIsFocused: false,
+      changeLocale: () => this.props.overlayVisible(),
     })
   }
 
@@ -84,15 +112,42 @@ class AddAdvScreen extends Component {
         dataNew.append(response.fileName, source)
         const prevLocalImage = this.state.local_images
         const prevImage = this.state.images
-        uploadFile(this.props.token, dataNew)
-          .then(res => {
-            console.log(res)
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.props.token}`,
+        }
+        axios
+          .request({
+            method: 'post',
+            url: `${BASE_URL}/upload_images`,
+            data: dataNew,
+            headers,
+            onUploadProgress: p => {
+              console.log(p.loaded / p.total)
+              this.setState({
+                uploadingFile: true,
+                fileprogress: p.loaded / p.total,
+              })
+            },
+          })
+          .then(data => {
             this.setState({
-              images: prevImage.concat(res),
+              fileprogress: 1.0,
+              uploadingFile: false,
+              images: prevImage.concat(data),
               local_images: prevLocalImage.concat(response.uri),
             })
           })
           .catch(() => alert('Error ocurred'))
+        // uploadFile(this.props.token, dataNew)
+        //   .then(res => {
+        //     console.log(res)
+        //     this.setState({
+        //       images: prevImage.concat(res),
+        //       local_images: prevLocalImage.concat(response.uri),
+        //     })
+        //   })
+        //   .catch(() => alert('Error ocurred'))
       }
     })
   }
@@ -139,6 +194,20 @@ class AddAdvScreen extends Component {
     console.log(this.state)
     return (
       <KeyboardAvoidingView style={{flex: 1}}>
+        {this.state.uploadingFile ? (
+          <Modal visible={this.state.uploadingFile} transparent>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 10,
+                backgroundColor: 'rgba(69, 71, 74, 0.4)',
+              }}>
+              <Progress.Bar progress={this.state.fileprogress} width={200} />
+            </View>
+          </Modal>
+        ) : null}
         <ScrollView style={{flex: 1}}>
           <View style={{alignItems: 'center', backgroundColor: MAIN_COLOR, paddingHorizontal: 10}}>
             <Heading style={{marginVertical: 10, color: 'white'}}>
@@ -172,26 +241,49 @@ class AddAdvScreen extends Component {
               value={this.state.name}
               onChangeText={text => this.setState({name: text})}
             />
-            <View style={{marginBottom: 15}}>
-              {/* <Text style={{color: 'white', marginBottom: 5}}>Select category</Text> */}
-              <DropDownMenu
-                style={{
-                  selectedOption: {
-                    height: 80,
-                  },
-                  modal: {
-                    marginBottom: 10,
-                  },
-                }}
-                styleName="horizontal"
-                options={this.props.categories}
-                selectedOption={category || this.props.categories[0]}
-                onOptionSelected={cat => this.setState({category: cat})}
-                titleProperty="title_tm"
-                valueProperty="categories.id"
-              />
+            <View style={styles.dropdownView}>
+              <Text style={{color: 'white', marginBottom: 5, flex: 1}}>Select category</Text>
+              <View style={{flex: 2}}>
+                <DropDownMenu
+                  style={{
+                    selectedOption: {
+                      height: 80,
+                    },
+                    modal: {
+                      marginBottom: 10,
+                    },
+                  }}
+                  styleName="horizontal"
+                  options={this.props.categories}
+                  selectedOption={category || this.props.categories[0]}
+                  onOptionSelected={cat => this.setState({category: cat})}
+                  titleProperty="title_tm"
+                  valueProperty="categories.id"
+                />
+              </View>
             </View>
-            <View style={{marginBottom: 15}}>
+            <View style={styles.dropdownView}>
+              <Text style={{color: 'white', marginBottom: 5, flex: 1}}>Select category</Text>
+              <View style={{flex: 2, width: 100}}>
+                <DropDownMenu
+                  style={{
+                    selectedOption: {
+                      height: 80,
+                    },
+                    modal: {
+                      marginBottom: 10,
+                    },
+                  }}
+                  styleName="horizontal"
+                  options={this.props.categories}
+                  selectedOption={category || this.props.categories[0]}
+                  onOptionSelected={cat => this.setState({category: cat})}
+                  titleProperty="title_tm"
+                  valueProperty="categories.id"
+                />
+              </View>
+            </View>
+            <View style={styles.dropdownView}>
               {/* <Text style={{color: 'white', marginBottom: 5}}>Select type</Text> */}
               <DropDownMenu
                 style={{
@@ -326,5 +418,6 @@ export default connect(
   mapStateToProps,
   {
     addAdv,
+    overlayVisible,
   }
 )(AddAdvScreen)

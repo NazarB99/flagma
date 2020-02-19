@@ -31,7 +31,7 @@ import {Overlay} from 'react-native-elements'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 
 import Languages from '../config/Languages'
-import {login, changeLocale} from '../actions/userActions'
+import {login, changeLocale, overlayVisible} from '../actions/userActions'
 import {setUnreadCount, addToCount} from '../actions/chatActions'
 import {getAdsByCatId, setAd, setCategory, searchAdvs} from '../actions/adsActions'
 import CategoryModal from '../components/CategoryModal'
@@ -79,7 +79,7 @@ class MainScreen extends React.Component {
           .then(() => this.props.navigation.navigate('AdListPage'))
           .catch(() => alert(Languages[this.props.user.locale].Loggedin))
       },
-      changeLocale: () => this.setState({overlayVisible: true}),
+      changeLocale: () => this.props.overlayVisible(),
     })
     const data = {
       id: 1,
@@ -107,9 +107,9 @@ class MainScreen extends React.Component {
 
   renderRow = (rowData, sectionId, index) => {
     const cellViews = rowData.map((ad, id) => {
-      if (ad.images !== null) {
-        console.log(ad.images[0].img_url)
-      }
+      // if (ad.images !== null) {
+      //   // console.log(ad.images[0].img_url)
+      // }
       return this.state.loading ? (
         <Loading />
       ) : (
@@ -185,14 +185,14 @@ class MainScreen extends React.Component {
             onLayout={event => {
               console.log(event.nativeEvent.layout)
             }}>
-            <LanguageOverlay
+            {/* <LanguageOverlay
               navigation={this.props.navigation}
               locale={this.props.user.locale || 'ru'}
               changeLocale={this.props.changeLocale}
               closeLanguageOverlay={this.closeLanguageOverlay}
               openLanguageOverlay={this.openLanguageOverlay}
               overlayVisible={this.state.overlayVisible}
-            />
+            /> */}
             <ListView
               onScroll={({nativeEvent}) => {
                 const y = this.state.yAxis
@@ -280,7 +280,7 @@ class MainScreen extends React.Component {
               onPress={() =>
                 this.props.user.user.id
                   ? this.props.navigation.navigate('AddAdv')
-                  : alert(Languages[this.props.user.locale].Loggedin)
+                  : this.props.navigation.navigate('Login')
               }>
               <Icon name="plus-button" style={{color: 'white'}} />
               <Text style={{color: 'white'}}>
@@ -301,5 +301,15 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByCatId, setAd, setCategory, searchAdvs, login, setUnreadCount, addToCount, changeLocale}
+  {
+    getAdsByCatId,
+    setAd,
+    setCategory,
+    searchAdvs,
+    login,
+    setUnreadCount,
+    addToCount,
+    changeLocale,
+    overlayVisible,
+  }
 )(MainScreen)

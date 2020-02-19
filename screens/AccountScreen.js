@@ -9,6 +9,7 @@ import {View, Dimensions, ScrollView, StyleSheet} from 'react-native'
 import {TextInput, Text, Button, DropDownMenu, Heading, Title} from '@shoutem/ui'
 import {connect} from 'react-redux'
 
+import {overlayVisible} from '../actions/userActions'
 import Languages from '../config/Languages'
 import {setAccountModification} from '../actions/adsActions'
 import {MAIN_COLOR, ORANGE_COLOR} from '../config/Constants'
@@ -68,6 +69,10 @@ class AccountScreen extends Component {
       website,
       business_description,
       company_name,
+    })
+    this.props.navigation.setParams({
+      searchInputIsFocused: false,
+      changeLocale: () => this.props.overlayVisible(),
     })
   }
 
@@ -235,5 +240,6 @@ export default connect(
   mapStateToProps,
   {
     setAccountModification,
+    overlayVisible,
   }
 )(AccountScreen)

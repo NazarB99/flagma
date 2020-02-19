@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable react/no-access-state-in-setstate */
@@ -20,6 +21,7 @@ import {PersistGate} from 'redux-persist/integration/react'
 import {Button, Image, TextInput} from '@shoutem/ui'
 import Hamburger from 'react-native-animated-hamburger'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import {connect} from 'react-redux'
 
 import {init} from './config/Socket'
 import DrawerContent from './components/DrawerContent'
@@ -35,6 +37,7 @@ import AdListPageScreen from './screens/AdListPageScreen'
 import AccountScreen from './screens/AccountScreen'
 import ChatScreen from './screens/ChatScreen'
 import FilterScreen from './screens/FilterScreen'
+import LanguageOverlay from './components/LanguagesOverlay'
 
 const DrawerNav = createDrawerNavigator(
   {
@@ -187,8 +190,13 @@ const MainStack = createStackNavigator(
 const AppContainer = createAppContainer(MainStack)
 
 class App extends Component {
+  state = {
+    overlayVisible: false,
+  }
+
   componentDidMount() {
     init()
+    console.disableYellowBox = true
   }
 
   render() {
@@ -196,6 +204,12 @@ class App extends Component {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <View style={{flex: 1}}>
+            <LanguageOverlay
+              navigation={NavigationActions}
+              locale={store.getState().user.locale || 'ru'}
+              closeLanguageOverlay={this.closeLanguageOverlay}
+              openLanguageOverlay={this.openLanguageOverlay}
+            />
             {/* {this.state.container &&
               (this.getCurrentRoute() !== 'Login' && this.getCurrentRoute() !== 'Register') && (
                 <Navbar

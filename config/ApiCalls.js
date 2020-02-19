@@ -30,7 +30,6 @@ export const postCallApi = async (url, token = '', data = {}) => {
 }
 
 export const uploadFile = async (token = '', data = {}) => {
-  console.log(data)
   const response = await fetch(`${BASE_URL}/upload_images`, {
     method: 'POST',
     headers: {

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 import {postCallApi, getCallApi} from '../config/ApiCalls'
 
-import {SET_LOADING, FETCH_USER, LOGOUT, CHANGE_LANG} from './type/types'
+import {SET_LOADING, FETCH_USER, LOGOUT, CHANGE_LANG, OVERLAY_VISIBLE} from './type/types'
 
 export const login = (email, password) => async dispatch => {
   dispatch({type: SET_LOADING})
@@ -55,4 +55,8 @@ export const logout = () => async dispatch => {
 
 export const changeLocale = loc => async dispatch => {
   dispatch({type: CHANGE_LANG, payload: loc})
+}
+
+export const overlayVisible = () => dispatch => {
+  dispatch({type: OVERLAY_VISIBLE})
 }

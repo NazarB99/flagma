@@ -31,6 +31,7 @@ import {connect} from 'react-redux'
 import {NavigationActions} from 'react-navigation'
 
 import Languages from '../config/Languages'
+import {overlayVisible} from '../actions/userActions'
 import {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs} from '../actions/adsActions'
 import Navbar from '../components/Navbar'
 import Loading from '../components/Loading'
@@ -64,6 +65,7 @@ class AdListPageScreen extends React.Component {
           .then(() => this.props.navigation.navigate('AdListPage'))
           .catch(() => alert(Languages[this.props.user.locale].Noresult))
       },
+      changeLocale: () => this.props.overlayVisible(),
     })
     const type = this.props.navigation.getParam('type')
     const data = {
@@ -220,5 +222,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs}
+  {getAdsByBusiness, getAdsByCategory, setAd, searchAdvs, overlayVisible}
 )(AdListPageScreen)
